@@ -2,11 +2,12 @@
     "name": "singha-roy-enterprise-opennext",
     "version": "0.1.0",
     "private": true,
+    "type": "module",
     "scripts": {
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint",
+        "lint": "eslint --flag unstable_native_nodejs_ts_config .",
         "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
         "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
         "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
