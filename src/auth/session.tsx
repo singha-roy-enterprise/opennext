@@ -62,6 +62,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const [authModalOpen, setAuthModalOpen] = useState(false);
 
     useEffect(() => {
+        // Hydrating the persisted session after mount is intentional (client-only).
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSession(readSession());
     }, []);
 

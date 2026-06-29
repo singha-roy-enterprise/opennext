@@ -23,12 +23,13 @@ export function useLocalStorage<T>(key: string, defaultValue: T): [T, (value: T 
         try {
             const stored = localStorage.getItem(key);
             if (stored) {
+                // Hydrating client-only persisted state after mount is intentional.
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setValue(JSON.parse(stored) as T);
             }
         } catch (error) {
             console.warn(`Error reading localStorage key "${key}":`, error);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key]);
 
     // Wrapper for setValue that persists to localStorage on explicit changes.

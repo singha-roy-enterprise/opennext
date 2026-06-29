@@ -72,7 +72,7 @@ select option {
 
 /* Form inputs used across Invoice + Inventory drawer */
 .led-in {
-    @apply w-full rounded-[3px] border border-ink/[0.18] bg-white px-[13px] py-[11px] text-[13.5px] text-ink outline-none transition-colors;
+    @apply border-ink/[0.18] text-ink w-full rounded-[3px] border bg-white px-[13px] py-[11px] text-[13.5px] transition-colors outline-none;
 }
 .led-in:focus {
     @apply border-accent;
@@ -83,7 +83,7 @@ select option {
 
 /* Borderless cells inside the invoice items table */
 .cell-in {
-    @apply w-full border-none bg-transparent px-2 py-[9px] font-mono text-[12.5px] text-ink outline-none;
+    @apply text-ink w-full border-none bg-transparent px-2 py-[9px] font-mono text-[12.5px] outline-none;
 }
 .cell-in:focus {
     @apply bg-accent/[0.07];

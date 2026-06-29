@@ -43,6 +43,8 @@ export function useVersionedFormStorage<T>(
         try {
             const raw = localStorage.getItem(versionedKey);
             if (raw) {
+                // Hydrating client-only persisted state after mount is intentional.
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setValue(JSON.parse(raw) as T);
             }
         } catch (error) {

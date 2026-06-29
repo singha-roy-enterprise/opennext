@@ -44,7 +44,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                         <div
                             key={t.id}
                             className={cn(
-                                "flex min-w-[210px] animate-[toastIn_0.25s_ease] items-center gap-2.5 rounded-[3px] border bg-card px-4 py-3 text-[13px] font-medium text-ink shadow-[0_14px_34px_-16px_rgba(27,25,22,0.5)]",
+                                "bg-card text-ink flex min-w-[210px] animate-[toastIn_0.25s_ease] items-center gap-2.5 rounded-[3px] border px-4 py-3 text-[13px] font-medium shadow-[0_14px_34px_-16px_rgba(27,25,22,0.5)]",
                                 k.border,
                             )}
                         >

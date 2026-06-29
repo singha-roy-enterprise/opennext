@@ -33,9 +33,7 @@ function formatNumber(value: number): string {
 function hardBreakText(text: string, maxChars: number = 20): string {
     return text
         .split(" ")
-        .map((word) =>
-            word.length > maxChars ? word.match(new RegExp(`.{1,${maxChars}}`, "g"))!.join("-​") : word,
-        )
+        .map((word) => (word.length > maxChars ? word.match(new RegExp(`.{1,${maxChars}}`, "g"))!.join("-​") : word))
         .join(" ");
 }
 
@@ -351,8 +349,7 @@ export async function generatePDF(billData: BillData, documentType: DocumentType
     // pdfmake ships as CJS/UMD; depending on the bundler it lands on the module
     // namespace directly or under `.default`. Handle both.
     type PdfMakeStatic = typeof import("pdfmake/build/pdfmake");
-    const pdfMake: PdfMakeStatic =
-        (pdfMakeModule as unknown as { default?: PdfMakeStatic }).default ?? pdfMakeModule;
+    const pdfMake: PdfMakeStatic = (pdfMakeModule as unknown as { default?: PdfMakeStatic }).default ?? pdfMakeModule;
 
     pdfMake.addVirtualFileSystem(vfsModule.default);
 
