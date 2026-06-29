@@ -1,5 +1,16 @@
 {
-	"files.associations": {
-		"wrangler.json": "jsonc"
-	}
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "editor.indentSize": "tabSize",
+    "editor.formatOnSave": true,
+
+    "[yaml]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+        "editor.indentSize": "tabSize"
+    },
+
+    "files.associations": {
+        "wrangler.jsonc": "jsonc"
+    }
 }
