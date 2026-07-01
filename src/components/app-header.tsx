@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/auth/session";
+import { useTheme } from "@/theme/theme";
 import { useToast } from "@/ui/toast";
 import { cn } from "@/lib/cn";
-import { SignInIcon, SignOutIcon } from "@/ui/icons";
+import { COMMIT_SHA_SHORT, COMMIT_URL, REPO_URL } from "@/utils/build-info";
+import { SignInIcon, SignOutIcon, GitHubIcon, GitCommitIcon, SunIcon, MoonIcon } from "@/ui/icons";
 
 /** Shared role badge styling, reused on the header and the home dashboard. */
 export function roleBadgeClass(admin: boolean): string {
@@ -81,6 +83,9 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
                 </div>
 
                 <div className="flex items-center gap-3.5">
+                    <HeaderUtilities />
+                    <span className="bg-ink/[0.18] h-6 w-px" />
+
                     {showNav && (
                         <>
                             <span className="text-ink-300 font-mono text-[10.5px] tracking-[0.05em]">v2.0</span>
@@ -102,7 +107,7 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
                     {isSignedIn && session.user && (
                         <div className="flex items-center gap-[11px]">
                             <span className={roleBadgeClass(isAdmin)}>{isAdmin ? "ADMIN" : "USER"}</span>
-                            <div className="border-ink/[0.18] flex items-center gap-2.5 rounded-[3px] border bg-white py-[5px] pr-1.5 pl-[5px]">
+                            <div className="border-ink/[0.18] flex items-center gap-2.5 rounded-[3px] border bg-surface py-[5px] pr-1.5 pl-[5px]">
                                 <div className="bg-ink text-cream flex size-7 items-center justify-center font-serif text-[13px]">
                                     {session.user.initials}
                                 </div>
@@ -124,5 +129,52 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
                 </div>
             </div>
         </header>
+    );
+}
+
+const iconButtonClass =
+    "border-ink/[0.18] text-ink-500 hover:border-ink hover:text-ink flex size-[30px] items-center justify-center rounded-[3px] border bg-transparent no-underline transition-colors";
+
+/** Commit SHA, GitHub source link, and light/dark theme toggle. */
+function HeaderUtilities() {
+    const { theme, toggleTheme } = useTheme();
+
+    return (
+        <div className="flex items-center gap-2">
+            {COMMIT_SHA_SHORT && (
+                <a
+                    href={COMMIT_URL || undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={`Commit ${COMMIT_SHA_SHORT} — view on GitHub`}
+                    className="border-ink/[0.18] text-ink-500 hover:border-ink hover:text-ink inline-flex items-center gap-1.5 rounded-[3px] border px-2 py-[6px] font-mono text-[10.5px] no-underline transition-colors"
+                >
+                    <GitCommitIcon size={12} />
+                    {COMMIT_SHA_SHORT}
+                </a>
+            )}
+
+            {REPO_URL && (
+                <a
+                    href={REPO_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="View source on GitHub"
+                    className={iconButtonClass}
+                >
+                    <GitHubIcon size={15} />
+                </a>
+            )}
+
+            <button
+                type="button"
+                onClick={toggleTheme}
+                title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                aria-label="Toggle theme"
+                className={cn(iconButtonClass, "cursor-pointer")}
+            >
+                {theme === "dark" ? <SunIcon size={15} /> : <MoonIcon size={15} />}
+            </button>
+        </div>
     );
 }
