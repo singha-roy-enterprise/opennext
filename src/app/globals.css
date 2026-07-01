@@ -4,11 +4,14 @@
    Editorial print-shop aesthetic: warm paper background, Newsreader serif
    display, Space Grotesk body, JetBrains Mono for figures. */
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-    /* Palette */
+    /* Palette (light) */
     --color-paper: #e8e3d6;
     --color-cream: #f1eee6;
     --color-card: #fbfaf6;
+    --color-surface: #ffffff;
     --color-ink: #1b1916;
     --color-ink-700: #4a453d;
     --color-ink-500: #7a746a;
@@ -23,6 +26,32 @@
     --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
     --font-serif: var(--font-newsreader), serif;
     --font-mono: var(--font-jetbrains-mono), monospace;
+}
+
+/* Dark theme — the semantic ink/cream pair inverts, so surfaces and text flip
+   automatically wherever these tokens are used. Applied via the `.dark` class
+   on <html> (see ThemeProvider + themeInitScript). */
+.dark {
+    --color-paper: #17151b;
+    --color-cream: #201d24;
+    --color-card: #201e25;
+    --color-surface: #2a2732;
+    --color-ink: #ece8f1;
+    --color-ink-700: #c4bfcd;
+    --color-ink-500: #928c9e;
+    --color-ink-300: #635d6e;
+    --color-accent: #7188f6;
+    --color-accent-dark: #8a9df8;
+    --color-danger: #e56a54;
+    --color-success: #4faa7d;
+    --color-warn: #d29a44;
+}
+
+:root {
+    color-scheme: light;
+}
+.dark {
+    color-scheme: dark;
 }
 
 * {
@@ -40,6 +69,9 @@ body {
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 ::-webkit-scrollbar {
@@ -50,7 +82,7 @@ body {
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: rgba(27, 25, 22, 0.22);
+    background: color-mix(in srgb, var(--color-ink) 22%, transparent);
     border: 3px solid transparent;
     background-clip: padding-box;
 }
@@ -66,7 +98,7 @@ textarea::placeholder {
     color: var(--color-ink-300);
 }
 select option {
-    background: #fff;
+    background: var(--color-surface);
     color: var(--color-ink);
 }
 

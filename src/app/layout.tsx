@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Newsreader, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { themeInitScript } from "@/theme/theme";
 
 const newsreader = Newsreader({
     variable: "--font-newsreader",
@@ -33,9 +34,10 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <head>
                 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+                <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
             </head>
             <body
                 className={`${newsreader.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}

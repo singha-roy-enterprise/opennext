@@ -97,7 +97,7 @@ export default function HomePage() {
                             <div className="mt-[22px] grid grid-cols-2 gap-3.5">
                                 <Link
                                     href="/inventory"
-                                    className="border-ink/[0.18] text-ink hover:border-accent flex items-center justify-between gap-2.5 rounded-[3px] border bg-white px-5 py-[18px] no-underline transition-colors"
+                                    className="border-ink/[0.18] text-ink hover:border-accent flex items-center justify-between gap-2.5 rounded-[3px] border bg-surface px-5 py-[18px] no-underline transition-colors"
                                 >
                                     <span>
                                         <span className="block text-[14px] font-bold">Inventory</span>
@@ -109,7 +109,7 @@ export default function HomePage() {
                                 {isAdmin ? (
                                     <Link
                                         href="/invoice"
-                                        className="border-ink/[0.18] text-ink hover:border-accent flex items-center justify-between gap-2.5 rounded-[3px] border bg-white px-5 py-[18px] no-underline transition-colors"
+                                        className="border-ink/[0.18] text-ink hover:border-accent flex items-center justify-between gap-2.5 rounded-[3px] border bg-surface px-5 py-[18px] no-underline transition-colors"
                                     >
                                         <span>
                                             <span className="block text-[14px] font-bold">Invoice Generator</span>

@@ -5,6 +5,10 @@
  * (`size`, `className`, `style`, `title`, …).
  */
 export {
+    FiGithub as GitHubIcon,
+    FiSun as SunIcon,
+    FiMoon as MoonIcon,
+    FiGitCommit as GitCommitIcon,
     FiLogOut as SignOutIcon,
     FiLogIn as SignInIcon,
     FiUserPlus as UserPlusIcon,
