@@ -22,7 +22,7 @@ import { useToast } from "@/ui/toast";
 import { AppHeader } from "@/components/app-header";
 import { cn } from "@/lib/cn";
 import {
-    GitHubIcon,
+    SignInIcon,
     LockIcon,
     PencilIcon,
     ListIcon,
@@ -117,7 +117,7 @@ function RestrictedView({ openAuth }: { openAuth: () => void }) {
                     </div>
                     <h1 className="m-0 font-serif text-[30px] font-semibold">Invoice generator is admin-only</h1>
                     <p className="text-ink-700 mx-auto mt-3.5 mb-[26px] max-w-[410px] text-[14px] leading-[1.55]">
-                        Creating GST invoices is restricted to admin accounts. Sign in with an admin GitHub account to
+                        Creating GST invoices is restricted to admin accounts. Sign in with an admin account to
                         continue, or head back to the inventory ledger.
                     </p>
                     <div className="flex flex-wrap justify-center gap-3">
@@ -126,8 +126,8 @@ function RestrictedView({ openAuth }: { openAuth: () => void }) {
                             onClick={openAuth}
                             className="border-ink bg-ink text-cream hover:border-accent hover:bg-accent inline-flex cursor-pointer items-center gap-[9px] rounded-[3px] border-[1.5px] px-[22px] py-[13px] text-[13px] font-semibold transition-colors"
                         >
-                            <GitHubIcon size={15} />
-                            Sign in with GitHub
+                            <SignInIcon size={15} />
+                            Sign in
                         </button>
                         <Link
                             href="/inventory"

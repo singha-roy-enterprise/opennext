@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "@/auth/session";
 import { useToast } from "@/ui/toast";
 import { cn } from "@/lib/cn";
-import { GitHubIcon, SignOutIcon } from "@/ui/icons";
+import { SignInIcon, SignOutIcon } from "@/ui/icons";
 
 /** Shared role badge styling, reused on the header and the home dashboard. */
 export function roleBadgeClass(admin: boolean): string {
@@ -94,8 +94,8 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
                             onClick={openAuth}
                             className="border-ink bg-ink text-cream hover:border-accent hover:bg-accent inline-flex cursor-pointer items-center gap-[9px] rounded-[3px] border-[1.5px] px-[15px] py-[9px] text-[12.5px] font-semibold transition-colors"
                         >
-                            <GitHubIcon size={15} />
-                            Sign in with GitHub
+                            <SignInIcon size={15} />
+                            Sign in
                         </button>
                     )}
 

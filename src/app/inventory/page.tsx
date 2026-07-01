@@ -449,7 +449,7 @@ export default function InventoryPage() {
                         </span>
                         <span className="text-ink-700 text-[13px]">
                             You&apos;re viewing in read-only mode. Stock editing is restricted to admin accounts — sign
-                            in with an admin GitHub account to add, edit and adjust stock.
+                            in with an admin account to add, edit and adjust stock.
                         </span>
                     </div>
                 )}

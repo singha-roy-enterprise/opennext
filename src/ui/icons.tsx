@@ -5,8 +5,12 @@
  * (`size`, `className`, `style`, `title`, …).
  */
 export {
-    FiGithub as GitHubIcon,
     FiLogOut as SignOutIcon,
+    FiLogIn as SignInIcon,
+    FiUserPlus as UserPlusIcon,
+    FiUser as UserIcon,
+    FiMail as MailIcon,
+    FiEyeOff as EyeOffIcon,
     FiArrowRight as ArrowRightIcon,
     FiArrowDown as ArrowDownIcon,
     FiEye as EyeIcon,

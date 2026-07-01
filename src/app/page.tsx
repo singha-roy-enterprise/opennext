@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/auth/session";
 import { AppHeader, roleBadgeClass } from "@/components/app-header";
-import { GitHubIcon, EyeIcon, ArrowRightIcon, LockIcon } from "@/ui/icons";
+import { SignInIcon, EyeIcon, ArrowRightIcon, LockIcon } from "@/ui/icons";
 
 export default function HomePage() {
     const { isSignedIn, isAdmin, session, openAuth, signOut } = useSession();
@@ -36,22 +36,22 @@ export default function HomePage() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="border-ink bg-card flex flex-col rounded-[5px] border-[1.5px] px-6 py-[26px]">
                                     <div className="border-ink mb-[18px] flex size-[42px] items-center justify-center rounded-[3px] border-[1.5px]">
-                                        <GitHubIcon size={20} />
+                                        <SignInIcon size={20} />
                                     </div>
                                     <h2 className="mt-0 mb-2 font-serif text-[23px] font-semibold">
-                                        Sign in with GitHub
+                                        Sign in to your account
                                     </h2>
                                     <p className="text-ink-700 mt-0 mb-[22px] flex-1 text-[13px] leading-[1.5]">
-                                        Generate GST invoices and manage inventory with full edit access. Admins can
-                                        add, edit and adjust stock.
+                                        Sign in with your username or email and password to generate GST invoices and
+                                        manage inventory with full edit access.
                                     </p>
                                     <button
                                         type="button"
                                         onClick={openAuth}
                                         className="border-ink bg-ink text-cream hover:border-accent hover:bg-accent inline-flex cursor-pointer items-center justify-center gap-[9px] rounded-[3px] border-[1.5px] p-[13px] text-[13px] font-semibold transition-colors"
                                     >
-                                        <GitHubIcon size={15} />
-                                        Sign in with GitHub
+                                        <SignInIcon size={15} />
+                                        Sign in
                                     </button>
                                 </div>
 
