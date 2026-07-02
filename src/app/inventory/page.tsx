@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { useSession } from "@/auth/session";
+import { trpc } from "@/trpc/react";
 import { useToast } from "@/ui/toast";
 import { AppHeader } from "@/components/app-header";
 import { cn } from "@/lib/cn";
@@ -30,15 +31,7 @@ import {
     BoxIcon,
     SpinnerIcon,
 } from "@/ui/icons";
-import {
-    inr,
-    loadInventory,
-    saveInventory,
-    statusMeta,
-    UNITS,
-    type InventoryItem,
-    type StatusMeta,
-} from "@/inventory/inventory-data";
+import { inr, statusMeta, UNITS, type InventoryItem, type StatusMeta } from "@/inventory/inventory-data";
 
 type SortKey = "name" | "sku" | "qty" | "purchase" | "selling";
 type Filter = "all" | "in" | "low" | "out";
@@ -94,8 +87,11 @@ export default function InventoryPage() {
     const { isAdmin } = useSession();
     const { toast } = useToast();
 
-    const [items, setItems] = useState<InventoryItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const utils = trpc.useUtils();
+    const itemsQuery = trpc.inventory.list.useQuery();
+    const items = useMemo(() => itemsQuery.data ?? [], [itemsQuery.data]);
+    const loading = itemsQuery.isLoading;
+
     const [view, setView] = useState<"table" | "card">("table");
     const [search, setSearch] = useState("");
     const [searchFocused, setSearchFocused] = useState(false);
@@ -104,22 +100,39 @@ export default function InventoryPage() {
     const [statusFilter, setStatusFilter] = useState<Filter>("all");
     const [selected, setSelected] = useState<Record<string, boolean>>({});
     const [drawer, setDrawer] = useState<DrawerState | null>(null);
-    const [saving, setSaving] = useState(false);
     const [confirm, setConfirm] = useState<{ ids: string[]; title: string; message: string } | null>(null);
 
-    // Simulated initial fetch.
-    useEffect(() => {
-        const t = setTimeout(() => {
-            setItems(loadInventory());
-            setLoading(false);
-        }, 650);
-        return () => clearTimeout(t);
-    }, []);
+    // ── inventory mutations (D1 via tRPC) ──────────────────────
+    const invalidateList = () => utils.inventory.list.invalidate();
 
-    // Persist whenever the catalogue changes (after the first load).
-    useEffect(() => {
-        if (!loading) saveInventory(items);
-    }, [items, loading]);
+    const createMutation = trpc.inventory.create.useMutation({
+        onSuccess: invalidateList,
+        onError: (e) => toast(e.message, "danger"),
+    });
+    const updateMutation = trpc.inventory.update.useMutation({
+        onSuccess: invalidateList,
+        onError: (e) => toast(e.message, "danger"),
+    });
+    // Optimistic +/- so stock ticks update instantly, rolling back on failure.
+    const adjustMutation = trpc.inventory.adjustQty.useMutation({
+        onMutate: async ({ id, delta }) => {
+            await utils.inventory.list.cancel();
+            const prev = utils.inventory.list.getData();
+            utils.inventory.list.setData(undefined, (old) =>
+                old?.map((it) => (it.id === id ? { ...it, qty: Math.max(0, it.qty + delta) } : it)),
+            );
+            return { prev };
+        },
+        onError: (e, _vars, context) => {
+            if (context?.prev) utils.inventory.list.setData(undefined, context.prev);
+            toast(e.message, "danger");
+        },
+        onSettled: invalidateList,
+    });
+    const removeMutation = trpc.inventory.remove.useMutation();
+    const bulkRemoveMutation = trpc.inventory.bulkRemove.useMutation();
+
+    const saving = createMutation.isPending || updateMutation.isPending;
 
     const totalValue = items.reduce((a, it) => a + it.qty * it.selling, 0);
     const lowCount = items.filter((it) => statusMeta(it).key === "low").length;
@@ -153,9 +166,7 @@ export default function InventoryPage() {
         return items.filter((it) => (it.name + " " + it.sku).toLowerCase().indexOf(q) > -1).slice(0, 6);
     }, [items, search, searchFocused]);
 
-    // ── mutations ──────────────────────────────────────────────
-    const adjustQty = (id: string, delta: number) =>
-        setItems((prev) => prev.map((it) => (it.id === id ? { ...it, qty: Math.max(0, it.qty + delta) } : it)));
+    const adjustQty = (id: string, delta: number) => adjustMutation.mutate({ id, delta });
 
     const toggleSelect = (id: string) =>
         setSelected((prev) => {
@@ -200,9 +211,7 @@ export default function InventoryPage() {
             toast("SKU and item name are required", "danger");
             return;
         }
-        setSaving(true);
-        const saved: InventoryItem = {
-            id: drawer.mode === "edit" ? drawer.id! : "i_" + Date.now(),
+        const payload = {
             sku: f.sku.trim().toUpperCase(),
             name: f.name.trim(),
             description: f.description.trim(),
@@ -212,14 +221,17 @@ export default function InventoryPage() {
             selling: Math.max(0, parseFloat(f.selling) || 0),
             reorder: Math.max(0, parseInt(f.reorder) || 0),
         };
-        setTimeout(() => {
-            setItems((prev) =>
-                drawer.mode === "edit" ? prev.map((it) => (it.id === saved.id ? saved : it)) : [saved, ...prev],
-            );
+        const isEdit = drawer.mode === "edit";
+        const onSuccess = () => {
             setDrawer(null);
-            setSaving(false);
-            toast(drawer.mode === "edit" ? `"${saved.name}" updated` : `"${saved.name}" added to inventory`);
-        }, 500);
+            toast(isEdit ? `"${payload.name}" updated` : `"${payload.name}" added to inventory`);
+        };
+        // Errors surface via each mutation's onError toast; the drawer stays open.
+        if (isEdit) {
+            updateMutation.mutate({ id: drawer.id!, ...payload }, { onSuccess });
+        } else {
+            createMutation.mutate(payload, { onSuccess });
+        }
     };
 
     const askDelete = (ids: string[]) => {
@@ -238,14 +250,22 @@ export default function InventoryPage() {
     const confirmDelete = () => {
         if (!confirm) return;
         const ids = confirm.ids;
-        setItems((prev) => prev.filter((it) => ids.indexOf(it.id) === -1));
-        setSelected((prev) => {
-            const next = { ...prev };
-            ids.forEach((id) => delete next[id]);
-            return next;
-        });
+        const onSuccess = () => {
+            setSelected((prev) => {
+                const next = { ...prev };
+                ids.forEach((id) => delete next[id]);
+                return next;
+            });
+            invalidateList();
+            toast(ids.length > 1 ? `${ids.length} items deleted` : "Item deleted", "muted");
+        };
+        const onError = (e: { message: string }) => toast(e.message, "danger");
+        if (ids.length > 1) {
+            bulkRemoveMutation.mutate({ ids }, { onSuccess, onError });
+        } else {
+            removeMutation.mutate({ id: ids[0] }, { onSuccess, onError });
+        }
         setConfirm(null);
-        toast(ids.length > 1 ? `${ids.length} items deleted` : "Item deleted", "muted");
     };
 
     const exportCsv = () => {

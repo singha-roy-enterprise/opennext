@@ -1,6 +1,8 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { trpc } from "@/trpc/react";
+import type { SessionUser } from "@/server/context";
 
 export type Role = "guest" | "admin" | "user";
 
@@ -15,19 +17,6 @@ export interface Session {
     user: Account | null;
 }
 
-/**
- * A mock credential record. Passwords are stored in plain text because this is
- * a front-end-only demo — there is no backend to hash or verify against. In
- * production, credentials would be checked server-side and only the resolved
- * session (role + profile) would ever reach the client.
- */
-export interface Credential extends Account {
-    username: string;
-    email: string;
-    password: string;
-    role: Exclude<Role, "guest">;
-}
-
 export interface SignUpInput {
     name: string;
     username: string;
@@ -37,80 +26,44 @@ export interface SignUpInput {
 
 export type AuthResult = { ok: true; session: Session } | { ok: false; error: string };
 
-/**
- * Pre-seeded demo accounts. Their credentials are surfaced in the sign-in modal
- * so the app stays usable as a demo without a real user directory.
- */
-export const DEMO_CREDENTIALS: Credential[] = [
+/** Display-only demo accounts, surfaced in the sign-in modal. Their passwords
+ * match the seeded rows in the database (see `migrations/0002_seed.sql`), so the
+ * one-click demo buttons authenticate against the real backend. */
+export interface DemoCredential {
+    username: string;
+    password: string;
+    name: string;
+    initials: string;
+    role: Exclude<Role, "guest">;
+}
+
+export const DEMO_CREDENTIALS: DemoCredential[] = [
     {
         username: "debarishi-sr",
-        email: "debarishi@singharoy.in",
         password: "admin123",
-        login: "@debarishi-sr",
         name: "Debarishi Singha Roy",
         initials: "DS",
         role: "admin",
     },
     {
         username: "sera-sengupta",
-        email: "sera@singharoy.in",
         password: "user123",
-        login: "@sera-sengupta",
         name: "Sera Sengupta",
         initials: "SS",
         role: "user",
     },
 ];
 
-const SESSION_STORAGE_KEY = "sre_session";
-const ACCOUNTS_STORAGE_KEY = "sre_accounts";
-
 const GUEST_SESSION: Session = { role: "guest", user: null };
 
-function readSession(): Session {
-    try {
-        const raw = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || "null");
-        if (raw && raw.role) return raw as Session;
-    } catch {
-        // ignore
-    }
-    return GUEST_SESSION;
+function toSession(user: SessionUser | null): Session {
+    if (!user) return GUEST_SESSION;
+    return { role: user.role, user: { login: user.login, name: user.name, initials: user.initials } };
 }
 
-/** User-registered mock accounts, persisted separately from the demo seeds. */
-function readRegistered(): Credential[] {
-    try {
-        const raw = JSON.parse(localStorage.getItem(ACCOUNTS_STORAGE_KEY) || "null");
-        if (Array.isArray(raw)) return raw as Credential[];
-    } catch {
-        // ignore
-    }
-    return [];
-}
-
-function writeRegistered(accounts: Credential[]): void {
-    try {
-        localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
-    } catch {
-        // ignore
-    }
-}
-
-/** All known credentials: demo seeds first, then registered accounts. */
-function allCredentials(): Credential[] {
-    return [...DEMO_CREDENTIALS, ...readRegistered()];
-}
-
-/** "Debarishi Singha Roy" -> "DS", "sera" -> "SE". */
-export function deriveInitials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) return "?";
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-function toAccount(cred: Credential): Account {
-    return { login: cred.login, name: cred.name, initials: cred.initials };
+function errorMessage(err: unknown): string {
+    if (err instanceof Error && err.message) return err.message;
+    return "Something went wrong. Please try again.";
 }
 
 interface SessionContextValue {
@@ -118,11 +71,11 @@ interface SessionContextValue {
     isSignedIn: boolean;
     isAdmin: boolean;
     isGuest: boolean;
-    /** Verify a username/email + password against the mock credential store. */
-    signIn: (identifier: string, password: string) => AuthResult;
-    /** Register a new mock account (always a "user" role) and sign in. */
-    signUp: (input: SignUpInput) => AuthResult;
-    signOut: () => void;
+    /** Verify credentials against the backend; resolves to an AuthResult. */
+    signIn: (identifier: string, password: string) => Promise<AuthResult>;
+    /** Register a new (read-only) account on the backend and sign in. */
+    signUp: (input: SignUpInput) => Promise<AuthResult>;
+    signOut: () => Promise<void>;
     /** Auth modal visibility (shared across pages). */
     authModalOpen: boolean;
     openAuth: () => void;
@@ -132,87 +85,54 @@ interface SessionContextValue {
 const SessionContext = createContext<SessionContextValue | null>(null);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-    // Start as a guest on the server and the first client render, then hydrate
-    // the persisted session after mount to avoid hydration mismatches.
-    const [session, setSession] = useState<Session>(GUEST_SESSION);
+    const utils = trpc.useUtils();
+    // Resolves the current session; guests get `null`. Runs client-side after
+    // mount, so SSR and first paint render as a guest (matching the markup).
+    const meQuery = trpc.auth.me.useQuery(undefined, { staleTime: 5 * 60_000 });
+    const loginMutation = trpc.auth.login.useMutation();
+    const signupMutation = trpc.auth.signup.useMutation();
+    const logoutMutation = trpc.auth.logout.useMutation();
+
     const [authModalOpen, setAuthModalOpen] = useState(false);
 
-    useEffect(() => {
-        // Hydrating the persisted session after mount is intentional (client-only).
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setSession(readSession());
-    }, []);
-
-    const applySession = useCallback((role: Role, user: Account | null): Session => {
-        const next: Session = { role, user };
-        try {
-            localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(next));
-        } catch {
-            // ignore
-        }
-        setSession(next);
-        return next;
-    }, []);
+    const meUser = meQuery.data ?? null;
+    const session = useMemo(() => toSession(meUser), [meUser]);
 
     const signIn = useCallback(
-        (identifier: string, password: string): AuthResult => {
-            const id = identifier.trim().toLowerCase();
-            if (!id || !password) {
-                return { ok: false, error: "Enter your username/email and password." };
+        async (identifier: string, password: string): Promise<AuthResult> => {
+            try {
+                const user = await loginMutation.mutateAsync({ identifier, password });
+                utils.auth.me.setData(undefined, user);
+                return { ok: true, session: toSession(user) };
+            } catch (err) {
+                return { ok: false, error: errorMessage(err) };
             }
-            const match = allCredentials().find((c) => c.username.toLowerCase() === id || c.email.toLowerCase() === id);
-            if (!match || match.password !== password) {
-                return { ok: false, error: "Incorrect username/email or password." };
-            }
-            return { ok: true, session: applySession(match.role, toAccount(match)) };
         },
-        [applySession],
+        [loginMutation, utils],
     );
 
     const signUp = useCallback(
-        ({ name, username, email, password }: SignUpInput): AuthResult => {
-            const cleanName = name.trim();
-            const cleanUsername = username.trim();
-            const cleanEmail = email.trim();
-
-            if (!cleanName || !cleanUsername || !cleanEmail || !password) {
-                return { ok: false, error: "All fields are required." };
+        async (input: SignUpInput): Promise<AuthResult> => {
+            try {
+                const user = await signupMutation.mutateAsync(input);
+                utils.auth.me.setData(undefined, user);
+                return { ok: true, session: toSession(user) };
+            } catch (err) {
+                return { ok: false, error: errorMessage(err) };
             }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-                return { ok: false, error: "Enter a valid email address." };
-            }
-            if (password.length < 6) {
-                return { ok: false, error: "Password must be at least 6 characters." };
-            }
-
-            const taken = allCredentials().some(
-                (c) =>
-                    c.username.toLowerCase() === cleanUsername.toLowerCase() ||
-                    c.email.toLowerCase() === cleanEmail.toLowerCase(),
-            );
-            if (taken) {
-                return { ok: false, error: "That username or email is already registered." };
-            }
-
-            const cred: Credential = {
-                username: cleanUsername,
-                email: cleanEmail,
-                password,
-                login: `@${cleanUsername}`,
-                name: cleanName,
-                initials: deriveInitials(cleanName),
-                role: "user",
-            };
-            writeRegistered([...readRegistered(), cred]);
-            return { ok: true, session: applySession(cred.role, toAccount(cred)) };
         },
-        [applySession],
+        [signupMutation, utils],
     );
 
-    const signOut = useCallback(() => {
-        applySession("guest", null);
+    const signOut = useCallback(async () => {
+        try {
+            await logoutMutation.mutateAsync();
+        } catch {
+            // Even if the network call fails, drop the client-side session.
+        }
+        utils.auth.me.setData(undefined, null);
         setAuthModalOpen(false);
-    }, [applySession]);
+    }, [logoutMutation, utils]);
 
     const value = useMemo<SessionContextValue>(
         () => ({

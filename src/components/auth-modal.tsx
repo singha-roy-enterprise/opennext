@@ -7,14 +7,24 @@ import { cn } from "@/lib/cn";
 import { Button } from "@/ui/button";
 import { Field } from "@/ui/field";
 import { Modal } from "@/ui/modal";
-import { CloseIcon, UserIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon, SignInIcon, UserPlusIcon } from "@/ui/icons";
+import {
+    CloseIcon,
+    UserIcon,
+    MailIcon,
+    LockIcon,
+    EyeIcon,
+    EyeOffIcon,
+    SignInIcon,
+    UserPlusIcon,
+    SpinnerIcon,
+} from "@/ui/icons";
 
 type Mode = "signin" | "signup";
 
 /**
- * Mock username/password auth modal. Credentials are verified client-side
- * against the demo seeds (and any locally-registered accounts) — the real
- * verification would happen on the backend in production.
+ * Username/password auth modal. Credentials are verified server-side via the
+ * tRPC `auth` router (backed by Cloudflare D1); the one-click demo buttons sign
+ * in against the seeded accounts.
  */
 export function AuthModal() {
     const { authModalOpen, closeAuth, signIn, signUp } = useSession();
@@ -28,6 +38,7 @@ export function AuthModal() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
 
     if (!authModalOpen) return null;
 
@@ -39,6 +50,7 @@ export function AuthModal() {
         setPassword("");
         setShowPassword(false);
         setError(null);
+        setSubmitting(false);
     };
 
     const close = () => {
@@ -63,18 +75,29 @@ export function AuthModal() {
         close();
     };
 
+    const runAuth = async (action: () => Promise<AuthResult>) => {
+        if (submitting) return;
+        setError(null);
+        setSubmitting(true);
+        try {
+            finish(await action());
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     const handleSignIn = (e: FormEvent) => {
         e.preventDefault();
-        finish(signIn(identifier, password));
+        void runAuth(() => signIn(identifier, password));
     };
 
     const handleSignUp = (e: FormEvent) => {
         e.preventDefault();
-        finish(signUp({ name, username, email, password }));
+        void runAuth(() => signUp({ name, username, email, password }));
     };
 
     const signInAsDemo = (demoIdentifier: string, demoPassword: string) => {
-        finish(signIn(demoIdentifier, demoPassword));
+        void runAuth(() => signIn(demoIdentifier, demoPassword));
     };
 
     const isSignIn = mode === "signin";
@@ -173,8 +196,19 @@ export function AuthModal() {
                     </div>
                 )}
 
-                <Button type="submit" variant="primary" className="mb-1 w-full gap-[9px] p-[13px]">
-                    {isSignIn ? <SignInIcon size={15} /> : <UserPlusIcon size={15} />}
+                <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={submitting}
+                    className="mb-1 w-full gap-[9px] p-[13px]"
+                >
+                    {submitting ? (
+                        <SpinnerIcon size={15} className="animate-spin" />
+                    ) : isSignIn ? (
+                        <SignInIcon size={15} />
+                    ) : (
+                        <UserPlusIcon size={15} />
+                    )}
                     {isSignIn ? "Sign in" : "Create account"}
                 </Button>
             </form>
@@ -190,7 +224,8 @@ export function AuthModal() {
                                 key={c.username}
                                 type="button"
                                 onClick={() => signInAsDemo(c.username, c.password)}
-                                className="border-ink/[0.16] hover:border-accent bg-surface flex w-full cursor-pointer items-center gap-[13px] rounded-[3px] border p-[11px] text-left transition-colors"
+                                disabled={submitting}
+                                className="border-ink/[0.16] hover:border-accent bg-surface flex w-full cursor-pointer items-center gap-[13px] rounded-[3px] border p-[11px] text-left transition-colors disabled:pointer-events-none disabled:opacity-55"
                             >
                                 <span
                                     className={cn(
