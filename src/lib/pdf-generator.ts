@@ -40,7 +40,7 @@ function hardBreakText(text: string, maxChars: number = 20): string {
 /**
  * Generate PDF document definition for pdfmake
  */
-function generateDocumentDefinition(billData: BillData, documentType: DocumentType): TDocumentDefinitions {
+export function generateDocumentDefinition(billData: BillData, documentType: DocumentType): TDocumentDefinitions {
     const { businessDetails, customerDetails, items, totals, invoiceNumber, date } = billData;
 
     // Filter out empty items for PDF
@@ -332,32 +332,6 @@ function generateDocumentDefinition(billData: BillData, documentType: DocumentTy
             fontSize: 9,
         },
     };
-}
-
-/**
- * Generate and download a PDF invoice.
- *
- * pdfmake is imported lazily so its browser-only code never runs during SSR —
- * this only executes in response to a user action in the browser.
- */
-export async function generatePDF(billData: BillData, documentType: DocumentType = "invoice"): Promise<void> {
-    const [pdfMakeModule, vfsModule] = await Promise.all([
-        import("pdfmake/build/pdfmake"),
-        import("pdfmake/build/vfs_fonts"),
-    ]);
-
-    // pdfmake ships as CJS/UMD; depending on the bundler it lands on the module
-    // namespace directly or under `.default`. Handle both.
-    type PdfMakeStatic = typeof import("pdfmake/build/pdfmake");
-    const pdfMake: PdfMakeStatic = (pdfMakeModule as unknown as { default?: PdfMakeStatic }).default ?? pdfMakeModule;
-
-    pdfMake.addVirtualFileSystem(vfsModule.default);
-
-    const docDefinition = generateDocumentDefinition(billData, documentType);
-    const prefix = documentType === "credit-note" ? "Credit_Note" : "Invoice";
-    const fileName = `${prefix}_${billData.invoiceNumber || "draft"}.pdf`;
-
-    pdfMake.createPdf(docDefinition).download(fileName);
 }
 
 /**
