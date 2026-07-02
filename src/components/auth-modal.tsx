@@ -4,6 +4,9 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { DEMO_CREDENTIALS, useSession, type AuthResult } from "@/auth/session";
 import { useToast } from "@/ui/toast";
 import { cn } from "@/lib/cn";
+import { Button } from "@/ui/button";
+import { Field } from "@/ui/field";
+import { Modal } from "@/ui/modal";
 import { CloseIcon, UserIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon, SignInIcon, UserPlusIcon } from "@/ui/icons";
 
 type Mode = "signin" | "signup";
@@ -77,15 +80,8 @@ export function AuthModal() {
     const isSignIn = mode === "signin";
 
     return (
-        <div
-            onClick={close}
-            className="fixed inset-0 z-[80] flex animate-[overlayIn_0.18s_ease] items-center justify-center bg-black/50 p-6"
-        >
-            <div
-                onClick={(e) => e.stopPropagation()}
-                className="border-ink bg-card w-[440px] max-w-full animate-[popIn_0.2s_ease] overflow-hidden rounded-[5px] border-[1.5px] shadow-[0_30px_70px_-34px_rgba(27,25,22,0.6)]"
-            >
-                <div className="border-ink/[0.14] flex items-center justify-between border-b px-[22px] py-5">
+        <Modal onClose={close} width="440px" zIndex={80}>
+            <div className="border-ink/[0.14] flex items-center justify-between border-b px-[22px] py-5">
                     <div className="flex items-center gap-2.5">
                         {isSignIn ? <SignInIcon size={18} /> : <UserPlusIcon size={18} />}
                         <h3 className="m-0 text-[15px] font-bold">{isSignIn ? "Sign in" : "Create an account"}</h3>
@@ -177,13 +173,10 @@ export function AuthModal() {
                         </div>
                     )}
 
-                    <button
-                        type="submit"
-                        className="border-ink bg-ink text-cream hover:border-accent hover:bg-accent mb-1 inline-flex w-full cursor-pointer items-center justify-center gap-[9px] rounded-[3px] border-[1.5px] p-[13px] text-[13px] font-semibold transition-colors"
-                    >
+                    <Button type="submit" variant="primary" className="mb-1 w-full gap-[9px] p-[13px]">
                         {isSignIn ? <SignInIcon size={15} /> : <UserPlusIcon size={15} />}
                         {isSignIn ? "Sign in" : "Create account"}
-                    </button>
+                    </Button>
                 </form>
 
                 {isSignIn ? (
@@ -235,8 +228,7 @@ export function AuthModal() {
                         New accounts are created with standard (read-only) access. Admin access is granted separately.
                     </div>
                 )}
-            </div>
-        </div>
+        </Modal>
     );
 }
 
@@ -257,43 +249,3 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
     );
 }
 
-function Field({
-    icon,
-    label,
-    value,
-    onChange,
-    placeholder,
-    type = "text",
-    autoComplete,
-    autoFocus = false,
-    trailing,
-}: {
-    icon: ReactNode;
-    label: string;
-    value: string;
-    onChange: (value: string) => void;
-    placeholder?: string;
-    type?: string;
-    autoComplete?: string;
-    autoFocus?: boolean;
-    trailing?: ReactNode;
-}) {
-    return (
-        <label className="mb-3.5 block">
-            <span className="text-ink-700 mb-1.5 block text-[11.5px] font-semibold tracking-[0.02em]">{label}</span>
-            <span className="border-ink/[0.18] focus-within:border-accent bg-surface flex items-center gap-2.5 rounded-[3px] border px-3 py-[10px] transition-colors">
-                <span className="text-ink-500 flex-none">{icon}</span>
-                <input
-                    type={type}
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    placeholder={placeholder}
-                    autoComplete={autoComplete}
-                    autoFocus={autoFocus}
-                    className="text-ink placeholder:text-ink-300 min-w-0 flex-1 border-none bg-transparent p-0 text-[13px] outline-none"
-                />
-                {trailing && <span className="flex-none">{trailing}</span>}
-            </span>
-        </label>
-    );
-}

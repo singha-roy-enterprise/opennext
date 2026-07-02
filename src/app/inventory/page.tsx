@@ -5,6 +5,14 @@ import { useSession } from "@/auth/session";
 import { useToast } from "@/ui/toast";
 import { AppHeader } from "@/components/app-header";
 import { cn } from "@/lib/cn";
+import { Badge, type BadgeTone } from "@/ui/badge";
+import { Button } from "@/ui/button";
+import { Card } from "@/ui/card";
+import { Drawer } from "@/ui/drawer";
+import { FieldLabel } from "@/ui/field";
+import { Modal } from "@/ui/modal";
+import { StatCell } from "@/ui/stat-cell";
+import { TextInput } from "@/ui/text-input";
 import {
     SearchIcon,
     CloseIcon,
@@ -297,12 +305,17 @@ export default function InventoryPage() {
                 </div>
 
                 {/* Stats */}
-                <div className="border-ink/[0.18] bg-card mb-[26px] grid grid-cols-4 overflow-hidden rounded-[4px] border">
+                <Card variant="subtle" className="mb-[26px] grid grid-cols-4 overflow-hidden rounded-[4px]">
                     <StatCell label="Total SKUs" value={String(items.length)} />
-                    <StatCell label="Stock Value" value={inr(totalValue)} colorClass="text-accent" />
-                    <StatCell label="Low Stock" value={String(lowCount)} colorClass="text-warn" warn />
-                    <StatCell label="Out of Stock" value={String(outCount)} colorClass="text-danger" last />
-                </div>
+                    <StatCell label="Stock Value" value={inr(totalValue)} tone="accent" />
+                    <StatCell
+                        label="Low Stock"
+                        value={String(lowCount)}
+                        tone="warn"
+                        icon={<AlertTriangleIcon size={12} />}
+                    />
+                    <StatCell label="Out of Stock" value={String(outCount)} tone="danger" last />
+                </Card>
 
                 {/* Toolbar */}
                 <div className="mb-[18px] flex flex-wrap items-center gap-2.5">
@@ -421,24 +434,20 @@ export default function InventoryPage() {
                         </button>
                     </div>
 
-                    <button
-                        type="button"
+                    <Button
+                        variant="ghost"
                         onClick={exportCsv}
-                        className="border-ink/[0.22] text-ink hover:border-ink bg-surface inline-flex cursor-pointer items-center gap-2 rounded-[3px] border px-3.5 py-2.5 text-[13px] font-semibold transition-colors"
+                        className="border-ink/[0.22] bg-surface hover:border-ink hover:text-ink px-3.5 py-2.5"
                     >
                         <DownloadIcon size={15} />
                         Export
-                    </button>
+                    </Button>
 
                     {isAdmin && (
-                        <button
-                            type="button"
-                            onClick={openAdd}
-                            className="border-accent bg-accent hover:border-accent-dark hover:bg-accent-dark inline-flex cursor-pointer items-center gap-2 rounded-[3px] border-[1.5px] px-4 py-[11px] text-[13px] font-bold whitespace-nowrap text-white transition-colors"
-                        >
+                        <Button variant="accent" onClick={openAdd} className="px-4 py-[11px] whitespace-nowrap">
                             <PlusIcon size={16} />
                             Add item
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -455,7 +464,7 @@ export default function InventoryPage() {
                 )}
 
                 {/* Listing */}
-                <div className="border-ink/[0.18] bg-card overflow-hidden rounded-[4px] border">
+                <Card variant="subtle" className="overflow-hidden rounded-[4px]">
                     {loading && <LoadingSkeleton />}
 
                     {isEmpty && (
@@ -527,7 +536,7 @@ export default function InventoryPage() {
                             ))}
                         </div>
                     )}
-                </div>
+                </Card>
             </main>
 
             {/* Bulk action bar */}
@@ -568,74 +577,35 @@ export default function InventoryPage() {
 
             {/* Delete confirmation */}
             {confirm && (
-                <div
-                    onClick={() => setConfirm(null)}
-                    className="fixed inset-0 z-[60] flex animate-[overlayIn_0.18s_ease] items-center justify-center bg-black/50 p-6"
+                <Modal
+                    onClose={() => setConfirm(null)}
+                    width="380px"
+                    className="rounded-[4px] p-6 shadow-[0_24px_60px_-30px_rgba(27,25,22,0.6)]"
                 >
-                    <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="border-ink bg-card w-[380px] max-w-full animate-[popIn_0.2s_ease] rounded-[4px] border-[1.5px] p-6 shadow-[0_24px_60px_-30px_rgba(27,25,22,0.6)]"
-                    >
-                        <div className="border-danger/35 bg-danger/[0.08] text-danger mb-4 flex size-11 items-center justify-center rounded-[3px] border">
-                            <TrashIcon size={22} />
-                        </div>
-                        <h3 className="mt-0 mb-[7px] font-serif text-[20px] font-semibold">{confirm.title}</h3>
-                        <p className="text-ink-700 mt-0 mb-5 text-[13px] leading-[1.5]">{confirm.message}</p>
-                        <div className="flex gap-[11px]">
-                            <button
-                                type="button"
-                                onClick={() => setConfirm(null)}
-                                className="border-ink/20 text-ink flex-1 cursor-pointer rounded-[3px] border bg-transparent p-[11px] text-[13px] font-semibold"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="button"
-                                onClick={confirmDelete}
-                                className="border-danger bg-danger flex-1 cursor-pointer rounded-[3px] border-[1.5px] p-[11px] text-[13px] font-bold text-white"
-                            >
-                                Delete
-                            </button>
-                        </div>
+                    <div className="border-danger/35 bg-danger/[0.08] text-danger mb-4 flex size-11 items-center justify-center rounded-[3px] border">
+                        <TrashIcon size={22} />
                     </div>
-                </div>
+                    <h3 className="mt-0 mb-[7px] font-serif text-[20px] font-semibold">{confirm.title}</h3>
+                    <p className="text-ink-700 mt-0 mb-5 text-[13px] leading-[1.5]">{confirm.message}</p>
+                    <div className="flex gap-[11px]">
+                        <Button
+                            variant="outline"
+                            onClick={() => setConfirm(null)}
+                            className="border-ink/20 hover:bg-transparent hover:text-ink flex-1 p-[11px]"
+                        >
+                            Cancel
+                        </Button>
+                        <Button variant="danger" onClick={confirmDelete} className="flex-1 p-[11px]">
+                            Delete
+                        </Button>
+                    </div>
+                </Modal>
             )}
         </div>
     );
 }
 
 // ── presentational sub-components ──────────────────────────────
-
-function StatCell({
-    label,
-    value,
-    colorClass,
-    warn,
-    last,
-}: {
-    label: string;
-    value: string;
-    colorClass?: string;
-    warn?: boolean;
-    last?: boolean;
-}) {
-    return (
-        <div className={cn("px-5 py-[18px]", !last && "border-ink/[0.12] border-r")}>
-            <div
-                className={cn(
-                    "flex items-center gap-1.5 font-mono text-[10px] font-semibold tracking-[0.1em] uppercase",
-                    colorClass || "text-ink-500",
-                )}
-            >
-                {warn && <AlertTriangleIcon size={12} />}
-                {label}
-            </div>
-            <div className={cn("mt-1.5 font-serif text-[32px] leading-none font-semibold", colorClass || "text-ink")}>
-                {value}
-            </div>
-        </div>
-    );
-}
 
 function LoadingSkeleton() {
     const bar = (w: number | "auto", flex?: number): CSSProperties => ({
@@ -659,15 +629,13 @@ function LoadingSkeleton() {
     );
 }
 
+const STATUS_TONE: Record<StatusMeta["key"], BadgeTone> = { out: "danger", low: "warn", in: "success" };
+
 function StatusBadge({ m }: { m: StatusMeta }) {
     return (
-        <span
-            className="inline-flex items-center gap-[5px] rounded-[2px] border px-[7px] py-0.5 font-mono text-[10px] font-semibold tracking-[0.03em] whitespace-nowrap uppercase"
-            style={{ color: m.color, background: m.bg, borderColor: m.border }}
-        >
-            <span className="size-[5px] flex-none rounded-full" style={{ background: m.color }} />
+        <Badge tone={STATUS_TONE[m.key]} dot>
             {m.label}
-        </span>
+        </Badge>
     );
 }
 
@@ -893,8 +861,6 @@ function CardItem({ item, isAdmin, selected, onToggle, onInc, onDec, onEdit, onD
     );
 }
 
-const drawerLabel = "mb-[7px] block text-[10.5px] font-semibold uppercase tracking-[0.1em] text-ink-500";
-
 function ItemDrawer({
     drawer,
     saving,
@@ -910,134 +876,111 @@ function ItemDrawer({
 }) {
     const d = drawer.draft;
     return (
-        <div
-            onClick={onClose}
-            className="fixed inset-0 z-50 flex animate-[overlayIn_0.2s_ease] justify-end bg-black/45"
-        >
-            <div
-                onClick={(e) => e.stopPropagation()}
-                className="border-ink bg-card h-full w-[440px] max-w-[92vw] animate-[drawerIn_0.26s_cubic-bezier(0.2,0.8,0.2,1)] overflow-y-auto border-l-[1.5px]"
-            >
-                <div className="border-ink bg-card sticky top-0 z-[2] flex items-center justify-between border-b-[1.5px] px-6 py-5">
-                    <h2 className="m-0 font-serif text-[22px] font-semibold">
-                        {drawer.mode === "edit" ? "Edit item" : "Add new item"}
-                    </h2>
-                    <button
-                        type="button"
+        <Drawer
+            onClose={onClose}
+            title={drawer.mode === "edit" ? "Edit item" : "Add new item"}
+            footer={
+                <>
+                    <Button
+                        variant="outline"
                         onClick={onClose}
-                        className="border-ink/[0.18] text-ink-700 hover:border-ink hover:text-ink flex size-8 cursor-pointer items-center justify-center rounded-[3px] border bg-transparent transition-colors"
-                    >
-                        <CloseIcon size={16} />
-                    </button>
-                </div>
-                <div className="flex flex-col gap-[18px] px-6 py-[22px]">
-                    <div className="grid grid-cols-2 gap-3.5">
-                        <div>
-                            <label className={drawerLabel}>SKU / Code</label>
-                            <input
-                                className="led-in font-mono"
-                                value={d.sku}
-                                onChange={(e) => onChange("sku", e.target.value)}
-                                placeholder="CEM-OPC53"
-                            />
-                        </div>
-                        <div>
-                            <label className={drawerLabel}>Unit</label>
-                            <select
-                                className="led-in cursor-pointer"
-                                value={d.unit}
-                                onChange={(e) => onChange("unit", e.target.value)}
-                            >
-                                {UNITS.map((u) => (
-                                    <option key={u} value={u}>
-                                        {u}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label className={drawerLabel}>Item name</label>
-                        <input
-                            className="led-in"
-                            value={d.name}
-                            onChange={(e) => onChange("name", e.target.value)}
-                            placeholder="Ambuja OPC 53 Grade Cement"
-                        />
-                    </div>
-                    <div>
-                        <label className={drawerLabel}>Description</label>
-                        <textarea
-                            className="led-in resize-y leading-[1.45]"
-                            value={d.description}
-                            onChange={(e) => onChange("description", e.target.value)}
-                            rows={2}
-                            placeholder="Short description…"
-                        />
-                    </div>
-                    <div className="bg-ink/[0.12] h-px" />
-                    <div className="grid grid-cols-2 gap-3.5">
-                        <div>
-                            <label className={drawerLabel}>Quantity</label>
-                            <input
-                                className="led-in font-mono"
-                                type="number"
-                                value={d.qty}
-                                onChange={(e) => onChange("qty", e.target.value)}
-                                placeholder="0"
-                            />
-                        </div>
-                        <div>
-                            <label className={drawerLabel}>Low-stock at</label>
-                            <input
-                                className="led-in font-mono"
-                                type="number"
-                                value={d.reorder}
-                                onChange={(e) => onChange("reorder", e.target.value)}
-                                placeholder="20"
-                            />
-                        </div>
-                        <div>
-                            <label className={drawerLabel}>Purchase ₹</label>
-                            <input
-                                className="led-in font-mono"
-                                type="number"
-                                value={d.purchase}
-                                onChange={(e) => onChange("purchase", e.target.value)}
-                                placeholder="0"
-                            />
-                        </div>
-                        <div>
-                            <label className={drawerLabel}>Selling ₹</label>
-                            <input
-                                className="led-in font-mono"
-                                type="number"
-                                value={d.selling}
-                                onChange={(e) => onChange("selling", e.target.value)}
-                                placeholder="0"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="border-ink bg-card sticky bottom-0 flex gap-[11px] border-t-[1.5px] px-6 py-[18px]">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="border-ink/20 text-ink flex-1 cursor-pointer rounded-[3px] border bg-transparent p-3 text-[13px] font-semibold"
+                        className="border-ink/20 hover:bg-transparent hover:text-ink flex-1 p-3"
                     >
                         Cancel
-                    </button>
-                    <button
-                        type="button"
-                        onClick={onSave}
-                        disabled={saving}
-                        className="border-accent bg-accent inline-flex flex-[2] cursor-pointer items-center justify-center gap-2 rounded-[3px] border-[1.5px] p-3 text-[13px] font-bold text-white"
-                    >
+                    </Button>
+                    <Button variant="accent" onClick={onSave} disabled={saving} className="flex-[2] p-3">
                         {saving && <SpinnerIcon size={15} className="animate-spin" />}
                         {drawer.mode === "edit" ? "Save changes" : "Add item"}
-                    </button>
+                    </Button>
+                </>
+            }
+        >
+            <div className="grid grid-cols-2 gap-3.5">
+                <div>
+                    <FieldLabel className="mb-[7px]">SKU / Code</FieldLabel>
+                    <TextInput
+                        mono
+                        value={d.sku}
+                        onChange={(e) => onChange("sku", e.target.value)}
+                        placeholder="CEM-OPC53"
+                    />
+                </div>
+                <div>
+                    <FieldLabel className="mb-[7px]">Unit</FieldLabel>
+                    <select
+                        className="led-in cursor-pointer"
+                        value={d.unit}
+                        onChange={(e) => onChange("unit", e.target.value)}
+                    >
+                        {UNITS.map((u) => (
+                            <option key={u} value={u}>
+                                {u}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
-        </div>
+            <div>
+                <FieldLabel className="mb-[7px]">Item name</FieldLabel>
+                <TextInput
+                    value={d.name}
+                    onChange={(e) => onChange("name", e.target.value)}
+                    placeholder="Ambuja OPC 53 Grade Cement"
+                />
+            </div>
+            <div>
+                <FieldLabel className="mb-[7px]">Description</FieldLabel>
+                <textarea
+                    className="led-in resize-y leading-[1.45]"
+                    value={d.description}
+                    onChange={(e) => onChange("description", e.target.value)}
+                    rows={2}
+                    placeholder="Short description…"
+                />
+            </div>
+            <div className="bg-ink/[0.12] h-px" />
+            <div className="grid grid-cols-2 gap-3.5">
+                <div>
+                    <FieldLabel className="mb-[7px]">Quantity</FieldLabel>
+                    <TextInput
+                        mono
+                        type="number"
+                        value={d.qty}
+                        onChange={(e) => onChange("qty", e.target.value)}
+                        placeholder="0"
+                    />
+                </div>
+                <div>
+                    <FieldLabel className="mb-[7px]">Low-stock at</FieldLabel>
+                    <TextInput
+                        mono
+                        type="number"
+                        value={d.reorder}
+                        onChange={(e) => onChange("reorder", e.target.value)}
+                        placeholder="20"
+                    />
+                </div>
+                <div>
+                    <FieldLabel className="mb-[7px]">Purchase ₹</FieldLabel>
+                    <TextInput
+                        mono
+                        type="number"
+                        value={d.purchase}
+                        onChange={(e) => onChange("purchase", e.target.value)}
+                        placeholder="0"
+                    />
+                </div>
+                <div>
+                    <FieldLabel className="mb-[7px]">Selling ₹</FieldLabel>
+                    <TextInput
+                        mono
+                        type="number"
+                        value={d.selling}
+                        onChange={(e) => onChange("selling", e.target.value)}
+                        placeholder="0"
+                    />
+                </div>
+            </div>
+        </Drawer>
     );
 }

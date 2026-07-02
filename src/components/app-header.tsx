@@ -6,14 +6,17 @@ import { useSession } from "@/auth/session";
 import { useTheme } from "@/theme/theme";
 import { useToast } from "@/ui/toast";
 import { cn } from "@/lib/cn";
+import { Badge } from "@/ui/badge";
+import { Button } from "@/ui/button";
 import { COMMIT_SHA_SHORT, COMMIT_URL, REPO_URL } from "@/utils/build-info";
 import { SignInIcon, SignOutIcon, GitHubIcon, GitCommitIcon, SunIcon, MoonIcon } from "@/ui/icons";
 
-/** Shared role badge styling, reused on the header and the home dashboard. */
-export function roleBadgeClass(admin: boolean): string {
-    return cn(
-        "inline-flex items-center gap-[5px] rounded-[2px] border px-2.5 py-[5px] font-mono text-[10px] font-semibold tracking-[0.05em]",
-        admin ? "border-success/40 bg-success/[0.08] text-success" : "border-ink/25 text-ink-500",
+/** Role badge shared by the header and the home dashboard. */
+function RoleBadge({ admin }: { admin: boolean }) {
+    return (
+        <Badge tone={admin ? "success" : "neutral"} className="px-2.5 py-[5px] tracking-[0.05em]">
+            {admin ? "ADMIN" : "USER"}
+        </Badge>
     );
 }
 
@@ -94,19 +97,15 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
                     )}
 
                     {!isSignedIn && (
-                        <button
-                            type="button"
-                            onClick={openAuth}
-                            className="border-ink bg-ink text-cream hover:border-accent hover:bg-accent inline-flex cursor-pointer items-center gap-[9px] rounded-[3px] border-[1.5px] px-[15px] py-[9px] text-[12.5px] font-semibold transition-colors"
-                        >
+                        <Button variant="primary" size="sm" onClick={openAuth} className="gap-[9px]">
                             <SignInIcon size={15} />
                             Sign in
-                        </button>
+                        </Button>
                     )}
 
                     {isSignedIn && session.user && (
                         <div className="flex items-center gap-[11px]">
-                            <span className={roleBadgeClass(isAdmin)}>{isAdmin ? "ADMIN" : "USER"}</span>
+                            <RoleBadge admin={isAdmin} />
                             <div className="border-ink/[0.18] bg-surface flex items-center gap-2.5 rounded-[3px] border py-[5px] pr-1.5 pl-[5px]">
                                 <div className="bg-ink text-cream flex size-7 items-center justify-center font-serif text-[13px]">
                                     {session.user.initials}

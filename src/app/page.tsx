@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/auth/session";
-import { AppHeader, roleBadgeClass } from "@/components/app-header";
+import { AppHeader } from "@/components/app-header";
+import { Badge } from "@/ui/badge";
+import { Button } from "@/ui/button";
+import { Card } from "@/ui/card";
 import { SignInIcon, EyeIcon, ArrowRightIcon, LockIcon } from "@/ui/icons";
 
 export default function HomePage() {
@@ -34,7 +37,7 @@ export default function HomePage() {
                     {!isSignedIn ? (
                         <>
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="border-ink bg-card flex flex-col rounded-[5px] border-[1.5px] px-6 py-[26px]">
+                                <Card variant="solid" className="flex flex-col px-6 py-[26px]">
                                     <div className="border-ink mb-[18px] flex size-[42px] items-center justify-center rounded-[3px] border-[1.5px]">
                                         <SignInIcon size={20} />
                                     </div>
@@ -45,17 +48,13 @@ export default function HomePage() {
                                         Sign in with your username or email and password to generate GST invoices and
                                         manage inventory with full edit access.
                                     </p>
-                                    <button
-                                        type="button"
-                                        onClick={openAuth}
-                                        className="border-ink bg-ink text-cream hover:border-accent hover:bg-accent inline-flex cursor-pointer items-center justify-center gap-[9px] rounded-[3px] border-[1.5px] p-[13px] text-[13px] font-semibold transition-colors"
-                                    >
+                                    <Button variant="primary" onClick={openAuth} className="gap-[9px] p-[13px]">
                                         <SignInIcon size={15} />
                                         Sign in
-                                    </button>
-                                </div>
+                                    </Button>
+                                </Card>
 
-                                <div className="border-ink/35 flex flex-col rounded-[5px] border-[1.5px] border-dashed px-6 py-[26px]">
+                                <Card variant="dashed" className="flex flex-col px-6 py-[26px]">
                                     <div className="border-ink/40 text-ink-700 mb-[18px] flex size-[42px] items-center justify-center rounded-[3px] border-[1.5px]">
                                         <EyeIcon size={20} />
                                     </div>
@@ -66,21 +65,21 @@ export default function HomePage() {
                                         Browse the live stock ledger in read-only mode. The invoice generator stays
                                         admin-only.
                                     </p>
-                                    <button
-                                        type="button"
+                                    <Button
+                                        variant="outline"
                                         onClick={() => router.push("/inventory")}
-                                        className="border-ink text-ink hover:bg-ink hover:text-cream inline-flex cursor-pointer items-center justify-center gap-[9px] rounded-[3px] border-[1.5px] bg-transparent p-[13px] text-[13px] font-semibold transition-colors"
+                                        className="gap-[9px] p-[13px]"
                                     >
                                         View inventory <ArrowRightIcon size={15} />
-                                    </button>
-                                </div>
+                                    </Button>
+                                </Card>
                             </div>
                             <p className="text-ink-500 mt-[22px] mb-0 text-center font-mono text-[11px]">
                                 Editing &amp; invoicing are limited to admin accounts.
                             </p>
                         </>
                     ) : (
-                        <div className="border-ink bg-card rounded-[5px] border-[1.5px] px-7 py-[30px]">
+                        <Card variant="solid" className="px-7 py-[30px]">
                             <div className="border-ink/[0.14] flex items-center gap-3.5 border-b pb-[22px]">
                                 <div className="bg-ink text-cream flex size-12 items-center justify-center font-serif text-[20px]">
                                     {session.user?.initials}
@@ -91,7 +90,12 @@ export default function HomePage() {
                                         {session.user?.login} · {isAdmin ? "Full access" : "Read-only access"}
                                     </div>
                                 </div>
-                                <span className={roleBadgeClass(isAdmin)}>{isAdmin ? "ADMIN" : "USER"}</span>
+                                <Badge
+                                    tone={isAdmin ? "success" : "neutral"}
+                                    className="px-2.5 py-[5px] tracking-[0.05em]"
+                                >
+                                    {isAdmin ? "ADMIN" : "USER"}
+                                </Badge>
                             </div>
 
                             <div className="mt-[22px] grid grid-cols-2 gap-3.5">
@@ -129,22 +133,18 @@ export default function HomePage() {
                             </div>
 
                             <div className="mt-5 flex gap-3.5 text-[12.5px]">
-                                <button
-                                    type="button"
-                                    onClick={openAuth}
-                                    className="text-accent cursor-pointer border-none bg-transparent p-0 font-semibold hover:underline"
-                                >
+                                <Button variant="link" onClick={openAuth}>
                                     Switch account
-                                </button>
-                                <button
-                                    type="button"
+                                </Button>
+                                <Button
+                                    variant="link"
                                     onClick={signOut}
-                                    className="text-ink-500 hover:text-danger cursor-pointer border-none bg-transparent p-0 font-semibold"
+                                    className="text-ink-500 hover:text-danger hover:no-underline"
                                 >
                                     Sign out
-                                </button>
+                                </Button>
                             </div>
-                        </div>
+                        </Card>
                     )}
                 </div>
             </main>

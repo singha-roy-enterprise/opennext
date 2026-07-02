@@ -21,6 +21,11 @@ import { useSession } from "@/auth/session";
 import { useToast } from "@/ui/toast";
 import { AppHeader } from "@/components/app-header";
 import { cn } from "@/lib/cn";
+import { Button } from "@/ui/button";
+import { Card } from "@/ui/card";
+import { TextInput } from "@/ui/text-input";
+import { FieldLabel } from "@/ui/field";
+import { SectionLabel } from "@/ui/section-label";
 import {
     SignInIcon,
     LockIcon,
@@ -83,17 +88,6 @@ function parseNum(v: string): number | null {
 const ITEM_COLS = "grid-cols-[26px_minmax(150px,1.5fr)_72px_52px_76px_90px_46px_80px_46px_80px_94px_26px]";
 
 const monoCell = "px-2 py-[9px] text-right font-mono text-[12.5px] text-ink-700";
-const fieldLabel = "mb-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.1em] text-ink-500";
-
-function SectionLabel({ n, title }: { n: string; title: string }) {
-    return (
-        <div className="mb-[18px] flex items-center gap-[11px]">
-            <span className="text-accent font-mono text-[11px] font-semibold">{n}</span>
-            <span className="text-[11.5px] font-semibold tracking-[0.18em] uppercase">{title}</span>
-            <span className="bg-ink/[0.14] h-px flex-1" />
-        </div>
-    );
-}
 
 export default function InvoicePage() {
     const { isAdmin, openAuth } = useSession();
@@ -108,7 +102,10 @@ function RestrictedView({ openAuth }: { openAuth: () => void }) {
             <div className="bg-accent h-1" />
             <AppHeader />
             <main className="mx-auto max-w-[1080px] px-7 pt-[34px] pb-[90px]">
-                <div className="border-ink bg-card mx-auto my-6 max-w-[560px] rounded-[5px] border-[1.5px] px-10 py-14 text-center shadow-[0_26px_60px_-38px_rgba(27,25,22,0.5)]">
+                <Card
+                    variant="solid"
+                    className="mx-auto my-6 max-w-[560px] px-10 py-14 text-center shadow-[0_26px_60px_-38px_rgba(27,25,22,0.5)]"
+                >
                     <div className="border-ink mx-auto mb-[22px] flex size-[52px] items-center justify-center rounded-[4px] border-[1.5px]">
                         <LockIcon size={24} />
                     </div>
@@ -121,14 +118,10 @@ function RestrictedView({ openAuth }: { openAuth: () => void }) {
                         continue, or head back to the inventory ledger.
                     </p>
                     <div className="flex flex-wrap justify-center gap-3">
-                        <button
-                            type="button"
-                            onClick={openAuth}
-                            className="border-ink bg-ink text-cream hover:border-accent hover:bg-accent inline-flex cursor-pointer items-center gap-[9px] rounded-[3px] border-[1.5px] px-[22px] py-[13px] text-[13px] font-semibold transition-colors"
-                        >
+                        <Button variant="primary" onClick={openAuth} className="gap-[9px]">
                             <SignInIcon size={15} />
                             Sign in
-                        </button>
+                        </Button>
                         <Link
                             href="/inventory"
                             className="border-ink text-ink hover:bg-ink hover:text-cream inline-flex items-center gap-2 rounded-[3px] border-[1.5px] bg-transparent px-[22px] py-[13px] text-[13px] font-semibold no-underline transition-colors"
@@ -136,7 +129,7 @@ function RestrictedView({ openAuth }: { openAuth: () => void }) {
                             View inventory
                         </Link>
                     </div>
-                </div>
+                </Card>
             </main>
         </div>
     );
@@ -255,7 +248,10 @@ function InvoiceGenerator() {
             <AppHeader />
 
             <main className="mx-auto max-w-[1080px] px-7 pt-[34px] pb-[90px]">
-                <div className="border-ink/[0.18] bg-card overflow-hidden rounded-[5px] border shadow-[0_1px_0_rgba(27,25,22,0.04),0_26px_60px_-38px_rgba(27,25,22,0.5)]">
+                <Card
+                    variant="subtle"
+                    className="overflow-hidden shadow-[0_1px_0_rgba(27,25,22,0.04),0_26px_60px_-38px_rgba(27,25,22,0.5)]"
+                >
                     {/* FROM + invoice meta */}
                     <div className="border-ink flex flex-wrap justify-between gap-[30px] border-b-[1.5px] px-[38px] pt-[34px] pb-7">
                         <div className="min-w-0 flex-[1_1_320px]">
@@ -288,47 +284,41 @@ function InvoiceGenerator() {
                                 </div>
                             ) : (
                                 <div className="flex max-w-[420px] flex-col gap-[9px]">
-                                    <input
-                                        className="led-in"
+                                    <TextInput
                                         value={businessDetails.name}
                                         onChange={(e) => updateBusiness({ name: e.target.value })}
                                         placeholder="Business name"
                                     />
-                                    <input
-                                        className="led-in"
+                                    <TextInput
                                         value={businessDetails.address.line1}
                                         onChange={(e) => updateBusinessAddress({ line1: e.target.value })}
                                         placeholder="Address line 1"
                                     />
-                                    <input
-                                        className="led-in"
+                                    <TextInput
                                         value={businessDetails.address.line2 || ""}
                                         onChange={(e) => updateBusinessAddress({ line2: e.target.value })}
                                         placeholder="Address line 2"
                                     />
                                     <div className="flex gap-[9px]">
-                                        <input
-                                            className="led-in"
+                                        <TextInput
                                             value={businessDetails.address.city}
                                             onChange={(e) => updateBusinessAddress({ city: e.target.value })}
                                             placeholder="City"
                                         />
-                                        <input
-                                            className="led-in font-mono"
+                                        <TextInput
+                                            mono
                                             value={businessDetails.address.pin}
                                             onChange={(e) => updateBusinessAddress({ pin: e.target.value })}
                                             placeholder="PIN"
                                         />
-                                        <input
-                                            className="led-in"
+                                        <TextInput
                                             value={businessDetails.address.state}
                                             onChange={(e) => updateBusinessAddress({ state: e.target.value })}
                                             placeholder="State"
                                         />
                                     </div>
                                     <div className="flex gap-[9px]">
-                                        <input
-                                            className="led-in"
+                                        <TextInput
                                             value={businessDetails.phones.join(", ")}
                                             onChange={(e) =>
                                                 updateBusiness({
@@ -340,15 +330,14 @@ function InvoiceGenerator() {
                                             }
                                             placeholder="Phone(s)"
                                         />
-                                        <input
-                                            className="led-in"
+                                        <TextInput
                                             value={businessDetails.email}
                                             onChange={(e) => updateBusiness({ email: e.target.value })}
                                             placeholder="Email"
                                         />
                                     </div>
-                                    <input
-                                        className="led-in font-mono"
+                                    <TextInput
+                                        mono
                                         value={businessDetails.gstNo}
                                         onChange={(e) => updateBusiness({ gstNo: e.target.value })}
                                         placeholder="GSTIN"
@@ -365,11 +354,10 @@ function InvoiceGenerator() {
                                     <div className="text-ink-500 mb-[5px] font-mono text-[10px] tracking-[0.14em]">
                                         INVOICE NO.
                                     </div>
-                                    <input
-                                        className={cn(
-                                            ledClass(!!fieldErrors.invoiceNumber),
-                                            "w-[220px] text-right font-mono text-[13px]",
-                                        )}
+                                    <TextInput
+                                        mono
+                                        invalid={!!fieldErrors.invoiceNumber}
+                                        className="w-[220px] text-right text-[13px]"
                                         value={invoiceNumber}
                                         onChange={(e) => setInvoiceNumber(e.target.value)}
                                         placeholder="SRE/2026-27/0000"
@@ -379,8 +367,9 @@ function InvoiceGenerator() {
                                     <div className="text-ink-500 mb-[5px] font-mono text-[10px] tracking-[0.14em]">
                                         DATE
                                     </div>
-                                    <input
-                                        className="led-in w-[220px] font-mono text-[13px]"
+                                    <TextInput
+                                        mono
+                                        className="w-[220px] text-[13px]"
                                         type="date"
                                         value={dateString}
                                         onChange={(e) => setDateString(e.target.value)}
@@ -395,49 +384,49 @@ function InvoiceGenerator() {
                         <SectionLabel n="01" title="Bill To" />
                         <div className="grid grid-cols-2 gap-x-[18px] gap-y-[15px]">
                             <div className="col-span-2">
-                                <label className={fieldLabel}>Customer Name</label>
-                                <input
-                                    className={ledClass(!!fieldErrors.customerName)}
+                                <FieldLabel>Customer Name</FieldLabel>
+                                <TextInput
+                                    invalid={!!fieldErrors.customerName}
                                     value={customerDetails.name}
                                     onChange={(e) => updateCustomer({ name: e.target.value })}
                                     placeholder="Customer / firm name"
                                 />
                             </div>
                             <div className="col-span-2">
-                                <label className={fieldLabel}>Address</label>
-                                <input
-                                    className={cn(ledClass(!!fieldErrors.customerAddress1), "mb-[9px]")}
+                                <FieldLabel>Address</FieldLabel>
+                                <TextInput
+                                    invalid={!!fieldErrors.customerAddress1}
+                                    className="mb-[9px]"
                                     value={customerDetails.address.line1}
                                     onChange={(e) => updateCustomerAddress({ line1: e.target.value })}
                                     placeholder="Street address, building name"
                                 />
-                                <input
-                                    className="led-in"
+                                <TextInput
                                     value={customerDetails.address.line2 || ""}
                                     onChange={(e) => updateCustomerAddress({ line2: e.target.value })}
                                     placeholder="Area, landmark (optional)"
                                 />
                             </div>
                             <div>
-                                <label className={fieldLabel}>City</label>
-                                <input
-                                    className={ledClass(!!fieldErrors.customerCity)}
+                                <FieldLabel>City</FieldLabel>
+                                <TextInput
+                                    invalid={!!fieldErrors.customerCity}
                                     value={customerDetails.address.city}
                                     onChange={(e) => updateCustomerAddress({ city: e.target.value })}
                                     placeholder="City"
                                 />
                             </div>
                             <div>
-                                <label className={fieldLabel}>PIN Code</label>
-                                <input
-                                    className="led-in font-mono"
+                                <FieldLabel>PIN Code</FieldLabel>
+                                <TextInput
+                                    mono
                                     value={customerDetails.address.pin}
                                     onChange={(e) => updateCustomerAddress({ pin: e.target.value })}
                                     placeholder="6-digit PIN"
                                 />
                             </div>
                             <div>
-                                <label className={fieldLabel}>State</label>
+                                <FieldLabel>State</FieldLabel>
                                 <select
                                     className={cn(ledClass(!!fieldErrors.customerState), "cursor-pointer")}
                                     value={customerDetails.address.state}
@@ -452,20 +441,20 @@ function InvoiceGenerator() {
                                 </select>
                             </div>
                             <div>
-                                <label className={fieldLabel}>Phone</label>
-                                <input
-                                    className="led-in font-mono"
+                                <FieldLabel>Phone</FieldLabel>
+                                <TextInput
+                                    mono
                                     value={customerDetails.phone || ""}
                                     onChange={(e) => updateCustomer({ phone: e.target.value })}
                                     placeholder="10-digit mobile"
                                 />
                             </div>
                             <div className="col-span-2">
-                                <label className={fieldLabel}>
+                                <FieldLabel>
                                     GSTIN <span className="text-ink-300">(optional)</span>
-                                </label>
-                                <input
-                                    className="led-in font-mono"
+                                </FieldLabel>
+                                <TextInput
+                                    mono
                                     value={customerDetails.gstNo || ""}
                                     onChange={(e) => updateCustomer({ gstNo: e.target.value })}
                                     placeholder="15-character GSTIN"
@@ -497,8 +486,8 @@ function InvoiceGenerator() {
                                         <label className="text-ink-500 mb-1.5 block text-[10px] font-semibold tracking-[0.12em] uppercase">
                                             Total bill (incl. GST)
                                         </label>
-                                        <input
-                                            className="led-in font-mono"
+                                        <TextInput
+                                            mono
                                             value={reverse.total}
                                             onChange={(e) => setReverse((r) => ({ ...r, total: e.target.value }))}
                                             placeholder="e.g. 11800"
@@ -508,8 +497,8 @@ function InvoiceGenerator() {
                                         <label className="text-ink-500 mb-1.5 block text-[10px] font-semibold tracking-[0.12em] uppercase">
                                             CGST %
                                         </label>
-                                        <input
-                                            className="led-in font-mono"
+                                        <TextInput
+                                            mono
                                             value={reverse.cgst}
                                             onChange={(e) => setReverse((r) => ({ ...r, cgst: e.target.value }))}
                                         />
@@ -518,8 +507,8 @@ function InvoiceGenerator() {
                                         <label className="text-ink-500 mb-1.5 block text-[10px] font-semibold tracking-[0.12em] uppercase">
                                             SGST %
                                         </label>
-                                        <input
-                                            className="led-in font-mono"
+                                        <TextInput
+                                            mono
                                             value={reverse.sgst}
                                             onChange={(e) => setReverse((r) => ({ ...r, sgst: e.target.value }))}
                                         />
@@ -620,14 +609,10 @@ function InvoiceGenerator() {
                         </div>
                     </div>
                     <div className="px-[38px] pt-3.5">
-                        <button
-                            type="button"
-                            onClick={addRow}
-                            className="border-ink/25 text-ink hover:border-accent hover:text-accent inline-flex cursor-pointer items-center gap-2 rounded-[3px] border bg-transparent px-[15px] py-[9px] text-[12.5px] font-semibold transition-colors"
-                        >
+                        <Button variant="ghost" size="sm" onClick={addRow}>
                             <PlusIcon size={15} />
                             Add row
-                        </button>
+                        </Button>
                     </div>
                     {fieldErrors.billItems && (
                         <div className="text-danger px-[38px] pt-3 text-[12.5px]">{fieldErrors.billItems}</div>
@@ -660,24 +645,16 @@ function InvoiceGenerator() {
 
                     {/* Actions */}
                     <div className="border-ink flex flex-wrap justify-end gap-3 border-t-[1.5px] px-[38px] py-[22px]">
-                        <button
-                            type="button"
-                            onClick={() => handleGenerate("credit-note")}
-                            className="border-ink text-ink hover:bg-ink hover:text-cream inline-flex cursor-pointer items-center gap-2 rounded-[3px] border-[1.5px] bg-transparent px-[22px] py-[13px] text-[13px] font-semibold transition-colors"
-                        >
+                        <Button variant="outline" onClick={() => handleGenerate("credit-note")}>
                             <DownloadIcon size={16} />
                             Credit Note
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => handleGenerate("invoice")}
-                            className="border-accent bg-accent hover:border-accent-dark hover:bg-accent-dark inline-flex cursor-pointer items-center gap-2 rounded-[3px] border-[1.5px] px-[26px] py-[13px] text-[13px] font-bold text-white transition-colors"
-                        >
+                        </Button>
+                        <Button variant="accent" onClick={() => handleGenerate("invoice")} className="px-[26px]">
                             <DownloadIcon size={16} />
                             Download Invoice
-                        </button>
+                        </Button>
                     </div>
-                </div>
+                </Card>
             </main>
         </div>
     );
