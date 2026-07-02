@@ -2,7 +2,7 @@ local group = vim.api.nvim_create_augroup("prettier_on_save", { clear = true })
 
 vim.api.nvim_create_autocmd("BufWritePost", {
     group = group,
-    pattern = { "*.ts", "*.json", "*.yaml", "*.yml", "*.md" },
+    pattern = { "*.ts", "*.tsx", "*.json", "*.yaml", "*.yml", "*.md" },
     callback = function(args)
         local bufnr = args.buf
         local path = vim.api.nvim_buf_get_name(bufnr)
@@ -11,9 +11,10 @@ vim.api.nvim_create_autocmd("BufWritePost", {
             return;
         end
 
-        vim.notify("cwd: " .. vim.fn.fnamemodify(path, ":h"))
-        vim.fn.jobstart({ "pnpm", "exec", "prettier", "--write", path, }, {
-            cwd = vim.fn.fnamemodify(path, ":h"),
+        local cwd = vim.fn.fnamemodify(path, ":h")
+
+        vim.fn.jobstart({ "pnpm", "exec", "prettier", "--write", path, "--ignore-path", vim.fs.joinpath(cwd, ".prettierignore") }, {
+            cwd = cwd,
             on_exit = function(_, code)
                 vim.schedule(function()
                     if code == 0 then
