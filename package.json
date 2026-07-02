@@ -8,7 +8,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint --flag unstable_native_nodejs_ts_config .",
-        "type-check": "tsc",
+        "type-check": "pnpm run cloudflare-typegen && tsc",
         "format": "prettier --write '**/*.{ts,tsx,css,json,jsonc,yml,yaml}'",
         "format:check": "prettier --check '**/*.{ts,tsx,scss,json,jsonc,yml,yaml}'",
         "deploy:staging": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env staging",
