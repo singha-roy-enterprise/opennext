@@ -1,0 +1,38 @@
+{
+    "pkg": "singha-roy-enterprise",
+    "globalName": "SinghaRoyEnterprise",
+    "projectId": "f974df39-a4a5-4fc0-9173-d3cd81ea3d7a",
+    "shape": "package",
+    "srcDir": "src/ui",
+    "tsconfig": "tsconfig.json",
+    "cssEntry": ".design-sync/compiled.css",
+    "readmeHeader": ".design-sync/conventions.md",
+    "componentSrcMap": {
+        "Button": "src/ui/button.tsx",
+        "TextInput": "src/ui/text-input.tsx",
+        "Field": "src/ui/field.tsx",
+        "FieldLabel": "src/ui/field.tsx",
+        "Badge": "src/ui/badge.tsx",
+        "SectionLabel": "src/ui/section-label.tsx",
+        "StatCell": "src/ui/stat-cell.tsx",
+        "Card": "src/ui/card.tsx",
+        "Modal": "src/ui/modal.tsx",
+        "Drawer": "src/ui/drawer.tsx"
+    },
+    "dtsPropsFor": {
+        "Button": "variant?: \"primary\" | \"accent\" | \"outline\" | \"ghost\" | \"danger\" | \"link\"; size?: \"sm\" | \"md\"; type?: \"button\" | \"submit\" | \"reset\"; disabled?: boolean; onClick?: React.MouseEventHandler<HTMLButtonElement>; className?: string; children?: React.ReactNode",
+        "TextInput": "invalid?: boolean; mono?: boolean; value?: string; defaultValue?: string; placeholder?: string; type?: string; disabled?: boolean; onChange?: React.ChangeEventHandler<HTMLInputElement>; className?: string",
+        "Field": "label: string; icon?: React.ReactNode; trailing?: React.ReactNode; value?: string; defaultValue?: string; placeholder?: string; type?: string; autoComplete?: string; autoFocus?: boolean; onChange?: (value: string) => void; className?: string",
+        "FieldLabel": "children: React.ReactNode; className?: string",
+        "Badge": "tone?: \"success\" | \"danger\" | \"warn\" | \"neutral\" | \"accent\"; dot?: boolean; children: React.ReactNode; className?: string",
+        "SectionLabel": "n: string; title: string; className?: string",
+        "StatCell": "label: string; value: string; tone?: \"default\" | \"accent\" | \"warn\" | \"danger\" | \"success\"; icon?: React.ReactNode; last?: boolean; className?: string",
+        "Card": "variant?: \"solid\" | \"subtle\" | \"dashed\"; className?: string; children?: React.ReactNode",
+        "Modal": "onClose: () => void; width?: string; zIndex?: number; className?: string; children: React.ReactNode",
+        "Drawer": "onClose: () => void; title: string; footer?: React.ReactNode; width?: string; bodyClassName?: string; children: React.ReactNode"
+    },
+    "overrides": {
+        "Modal": { "cardMode": "single", "viewport": "460x400" },
+        "Drawer": { "cardMode": "single", "viewport": "520x560" }
+    }
+}

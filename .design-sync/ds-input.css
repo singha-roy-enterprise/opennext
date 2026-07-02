@@ -1,0 +1,20 @@
+/* Design-sync Tailwind entry: compiles the app's globals.css (tokens, .led-in,
+   keyframes) plus every utility used across the primitives and their previews
+   into a single static stylesheet the design tool can ship.
+
+   The app serves Newsreader / Space Grotesk / JetBrains Mono via next/font,
+   which sets the --font-* CSS variables at runtime. The design tool has no
+   next/font, so we load the same families from Google Fonts and define those
+   variables here. */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import "../src/app/globals.css";
+@source "../src";
+@source "./previews";
+
+@layer base {
+    :root {
+        --font-newsreader: "Newsreader", Georgia, serif;
+        --font-space-grotesk: "Space Grotesk", system-ui, sans-serif;
+        --font-jetbrains-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+}
