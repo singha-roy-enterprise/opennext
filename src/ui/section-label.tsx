@@ -11,6 +11,8 @@ export interface SectionLabelProps {
 /**
  * A numbered section header: a mono accent index, a spaced-uppercase title, and
  * a hairline rule that fills the rest of the row. Structures the invoice form.
+ *
+ * @category Display
  */
 export function SectionLabel({ n, title, className }: SectionLabelProps) {
     return (

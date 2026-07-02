@@ -19,6 +19,8 @@ export interface DrawerProps {
 /**
  * Right-hand slide-in panel with a sticky serif header (title + close) and an
  * optional sticky footer. The body scrolls between them. Backdrop click closes.
+ *
+ * @category Overlays
  */
 export function Drawer({ onClose, title, footer, width = "440px", bodyClassName, children }: DrawerProps) {
     return (

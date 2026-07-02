@@ -33,6 +33,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * The house button. Encodes the app's five box styles plus an inline `link`
  * variant so call sites stop repeating long Tailwind strings. Defaults to
  * `type="button"` (the app almost never submits forms implicitly).
+ *
+ * @category Actions
  */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     { variant = "primary", size = "md", type = "button", className, children, ...rest },

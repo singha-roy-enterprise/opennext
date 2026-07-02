@@ -12,6 +12,8 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
  * The house text field — the `.led-in` style (white fill, hairline border,
  * cobalt focus ring, red-on-invalid) as a component. Use `mono` for codes and
  * figures, `invalid` for error states.
+ *
+ * @category Forms
  */
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
     { invalid, mono, className, ...rest },

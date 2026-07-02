@@ -19,6 +19,8 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * The paper-panel container: a warm card surface with one of three border
  * treatments and a slightly-squared radius. Layout/padding come from className.
+ *
+ * @category Layout
  */
 export function Card({ variant = "subtle", className, children, ...rest }: CardProps) {
     return (

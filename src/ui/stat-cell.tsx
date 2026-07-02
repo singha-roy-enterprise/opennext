@@ -34,6 +34,8 @@ export interface StatCellProps {
 /**
  * A single metric in a stat strip: a mono uppercase label over a big serif
  * value, tinted by tone. Compose several side by side inside a bordered card.
+ *
+ * @category Display
  */
 export function StatCell({ label, value, tone = "default", icon, last, className }: StatCellProps) {
     return (

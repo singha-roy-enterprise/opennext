@@ -22,6 +22,8 @@ export interface BadgeProps {
 /**
  * Tiny mono uppercase status/role pill: a thin tinted border, faint background,
  * and an optional leading dot. Used for stock status and account roles.
+ *
+ * @category Display
  */
 export function Badge({ tone = "neutral", dot, children, className }: BadgeProps) {
     return (

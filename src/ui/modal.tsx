@@ -16,6 +16,8 @@ export interface ModalProps {
 /**
  * Centered modal shell: a dimmed backdrop that closes on click and a popping
  * card that swallows inner clicks. Provide the dialog contents as children.
+ *
+ * @category Overlays
  */
 export function Modal({ onClose, width = "440px", zIndex = 60, className, children }: ModalProps) {
     return (

@@ -1,7 +1,11 @@
 import { type InputHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-/** Uppercase mono micro-label used above stacked form fields (invoice, drawer). */
+/**
+ * Uppercase mono micro-label used above stacked form fields (invoice, drawer).
+ *
+ * @category Forms
+ */
 export function FieldLabel({ children, className }: { children: ReactNode; className?: string }) {
     return (
         <span className={cn("text-ink-500 mb-1.5 block text-[10.5px] font-semibold tracking-[0.1em] uppercase", className)}>
@@ -24,6 +28,8 @@ export interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
  * A labelled input in a bordered box with an optional leading icon and trailing
  * adornment — the auth-form field style. `onChange` yields the string value
  * directly for terse call sites.
+ *
+ * @category Forms
  */
 export function Field({ label, icon, trailing, onChange, className, ...rest }: FieldProps) {
     return (
