@@ -1,4 +1,4 @@
-name: Deploy to cloudflare (staging)
+name: Deploy to Cloudflare (staging)
 
 on:
     workflow_call:
@@ -6,7 +6,7 @@ on:
 jobs:
     format_check:
         runs-on: [ubuntu-latest]
-        name: Check formatting
+        name: Deploy to Cloudflare (staging)
         environment: staging
         steps:
             - uses: actions/checkout@v7
