@@ -284,8 +284,7 @@ export default function InventoryPage() {
 
     return (
         <div className="bg-paper min-h-screen">
-            <div className="bg-accent h-1" />
-            <AppHeader />
+            <AppHeader showNav={false} />
 
             <main className="mx-auto max-w-[1180px] px-7 pt-[34px] pb-[90px]">
                 {/* Title */}
@@ -591,7 +590,7 @@ export default function InventoryPage() {
                         <Button
                             variant="outline"
                             onClick={() => setConfirm(null)}
-                            className="border-ink/20 hover:bg-transparent hover:text-ink flex-1 p-[11px]"
+                            className="border-ink/20 hover:text-ink flex-1 p-[11px] hover:bg-transparent"
                         >
                             Cancel
                         </Button>
@@ -771,7 +770,12 @@ function CardItem({ item, isAdmin, selected, onToggle, onInc, onDec, onEdit, onD
     const m = statusMeta(item);
     const margin = marginParts(item);
     return (
-        <div className={cn("bg-surface rounded-[3px] border p-4", selected ? "border-accent" : "border-ink/[0.14]")}>
+        <div
+            className={cn(
+                "bg-surface rounded-[3px] border p-4 transition-colors",
+                selected ? "border-accent" : "border-ink/[0.14] hover:border-ink/30",
+            )}
+        >
             <div className="mb-[11px] flex items-center justify-between gap-2.5">
                 <div className="flex min-w-0 items-center gap-[9px]">
                     {isAdmin && (
@@ -885,7 +889,7 @@ function ItemDrawer({
                     <Button
                         variant="outline"
                         onClick={onClose}
-                        className="border-ink/20 hover:bg-transparent hover:text-ink flex-1 p-3"
+                        className="border-ink/20 hover:text-ink flex-1 p-3 hover:bg-transparent"
                     >
                         Cancel
                     </Button>

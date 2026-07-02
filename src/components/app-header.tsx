@@ -43,11 +43,16 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
     };
 
     return (
-        <header className="border-ink bg-cream border-b-[1.5px]">
+        <header className="border-ink bg-cream/90 sticky top-0 z-40 border-b-[1.5px] backdrop-blur-md">
+            <div className="bg-accent h-1" />
             <div className="mx-auto flex h-[74px] max-w-[1180px] items-center justify-between gap-5 px-7">
                 <div className="flex min-w-0 items-center gap-[22px]">
-                    <div className="flex items-center gap-[13px]">
-                        <div className="border-ink flex size-10 items-center justify-center border-[1.5px] font-serif text-[18px] font-semibold">
+                    <Link
+                        href="/"
+                        title="Singha Roy Enterprise — home"
+                        className="group text-ink flex items-center gap-[13px] no-underline"
+                    >
+                        <div className="border-ink group-hover:border-accent group-hover:text-accent flex size-10 items-center justify-center border-[1.5px] font-serif text-[18px] font-semibold transition-colors">
                             SR
                         </div>
                         <div className="flex flex-col leading-[1.15]">
@@ -56,7 +61,7 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
                                 TAX INVOICE & STOCK LEDGER · BALURGHAT, WB
                             </span>
                         </div>
-                    </div>
+                    </Link>
                     {showNav && (
                         <nav className="flex h-[74px] items-stretch pl-1.5">
                             {navItems.map((item) => {

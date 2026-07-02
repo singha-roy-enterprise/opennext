@@ -15,7 +15,6 @@ export default function HomePage() {
 
     return (
         <div className="bg-paper flex min-h-screen flex-col">
-            <div className="bg-accent h-1" />
             <AppHeader showNav={false} />
 
             <main className="flex flex-1 items-center justify-center px-7 py-12">

@@ -99,7 +99,6 @@ export default function InvoicePage() {
 function RestrictedView({ openAuth }: { openAuth: () => void }) {
     return (
         <div className="bg-paper min-h-screen">
-            <div className="bg-accent h-1" />
             <AppHeader />
             <main className="mx-auto max-w-[1080px] px-7 pt-[34px] pb-[90px]">
                 <Card
@@ -244,7 +243,6 @@ function InvoiceGenerator() {
 
     return (
         <div className="bg-paper min-h-screen">
-            <div className="bg-accent h-1" />
             <AppHeader />
 
             <main className="mx-auto max-w-[1080px] px-7 pt-[34px] pb-[90px]">
