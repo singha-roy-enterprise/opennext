@@ -50,6 +50,10 @@ next-env.d.ts
 
 /cloudflare-env.d.ts
 
+# Prisma — generated client (regenerated on install) + local dev SQLite
+/src/generated
+/prisma/dev.db*
+
 
 !.dev.vars.example
 

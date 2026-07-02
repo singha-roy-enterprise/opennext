@@ -6,13 +6,46 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 Read the documentation at https://opennext.js.org/cloudflare.
 
-## Develop
+## Backend (tRPC + Prisma + Cloudflare D1)
 
-Run the Next.js development server:
+Auth (signup / login / logout / session) and the inventory ledger are served by
+type-safe [tRPC](https://trpc.io) routes under `src/app/api/trpc`, backed by
+[Prisma](https://www.prisma.io) against a [Cloudflare D1](https://developers.cloudflare.com/d1/)
+(serverless SQLite) database. Passwords are hashed with Web Crypto (PBKDF2) and
+sessions are opaque tokens held in an httpOnly cookie.
+
+Key locations:
+
+- `prisma/schema.prisma` — data model (`User`, `Session`, `InventoryItem`).
+- `migrations/` — raw SQL migrations applied to D1 by Wrangler (`0001_init`, `0002_seed`).
+- `src/server/` — Prisma client, auth helpers, tRPC context/routers.
+- `src/trpc/` — the client-side tRPC + React Query provider.
+
+### First-time setup
 
 ```bash
-npm run dev
-# or similar package manager command
+pnpm install                 # also runs `prisma generate` (postinstall)
+pnpm run db:migrate:local    # create + seed the local D1 database
+```
+
+The seed adds two demo accounts — `debarishi-sr` / `admin123` (admin) and
+`sera-sengupta` / `user123` (user) — plus a starter catalogue. Regenerate the
+Prisma client after editing the schema with `pnpm run db:generate`, and produce
+a new SQL migration with:
+
+```bash
+pnpm exec prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > migrations/000N_name.sql
+```
+
+To apply migrations to the deployed (staging) database: `pnpm run db:migrate:staging`.
+
+## Develop
+
+Run the Next.js development server (D1 bindings are provided locally via
+`initOpenNextCloudflareForDev`):
+
+```bash
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

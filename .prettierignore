@@ -3,6 +3,7 @@
 /node_modules
 /output
 /.wrangler
+/src/generated
 
 /pnpm-lock.yaml
 /pnpm-workspace.yaml

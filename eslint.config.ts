@@ -16,6 +16,7 @@ const eslintConfig = [
             ".ds-sync/**",
             "out/**",
             "build/**",
+            "src/generated/**",
             "next-env.d.ts",
             "cloudflare-env.d.ts",
         ],

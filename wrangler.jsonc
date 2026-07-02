@@ -13,6 +13,18 @@
 
     "name": "singha-roy-enterprise",
 
+    // Top-level D1 binding used by `next dev` (via initOpenNextCloudflareForDev)
+    // and by local migrations. `database_id` is a placeholder — it's only read
+    // for remote operations; `--local` uses the on-disk SQLite under .wrangler.
+    "d1_databases": [
+        {
+            "binding": "D1",
+            "database_name": "singha-roy-enterprise-d1",
+            "database_id": "00000000-0000-0000-0000-000000000000",
+            "migrations_dir": "migrations",
+        },
+    ],
+
     "env": {
         "staging": {
             "name": "staging",
@@ -29,6 +41,7 @@
                     "binding": "D1",
                     "database_name": "singha-roy-enterprise-staging-d1",
                     "database_id": "70bea21c-bd71-4d7c-8988-9ac5962e2738",
+                    "migrations_dir": "migrations",
                 },
             ],
 

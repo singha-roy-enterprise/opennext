@@ -3,4 +3,6 @@ allowBuilds:
   workerd: true
   sharp: true
   unrs-resolver: true
+  '@prisma/engines': true
+  prisma: true
 nodeLinker: hoisted
