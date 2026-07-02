@@ -1,4 +1,6 @@
-import { type ReactNode } from "react";
+"use client";
+
+import { useEffect, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export interface ModalProps {
@@ -20,6 +22,12 @@ export interface ModalProps {
  * @category Overlays
  */
 export function Modal({ onClose, width = "440px", zIndex = 60, className, children }: ModalProps) {
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [onClose]);
+
     return (
         <div
             onClick={onClose}

@@ -1,4 +1,6 @@
-import { type ReactNode } from "react";
+"use client";
+
+import { useEffect, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { CloseIcon } from "@/ui/icons";
 
@@ -23,6 +25,12 @@ export interface DrawerProps {
  * @category Overlays
  */
 export function Drawer({ onClose, title, footer, width = "440px", bodyClassName, children }: DrawerProps) {
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [onClose]);
+
     return (
         <div
             onClick={onClose}

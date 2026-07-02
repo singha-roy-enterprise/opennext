@@ -6,11 +6,13 @@ export type ButtonSize = "sm" | "md";
 
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
     // Solid ink → cobalt on hover. The default call-to-action.
-    primary: "border-ink bg-ink text-cream hover:border-accent hover:bg-accent rounded-[3px] border-[1.5px] font-semibold",
+    primary:
+        "border-ink bg-ink text-cream hover:border-accent hover:bg-accent rounded-[3px] border-[1.5px] font-semibold",
     // Solid cobalt. The highest-emphasis action (Download invoice, Add item).
     accent: "border-accent bg-accent text-on-accent hover:border-accent-dark hover:bg-accent-dark rounded-[3px] border-[1.5px] font-bold",
     // Outline that inverts to an ink fill on hover.
-    outline: "border-ink text-ink hover:bg-ink hover:text-cream rounded-[3px] border-[1.5px] bg-transparent font-semibold",
+    outline:
+        "border-ink text-ink hover:bg-ink hover:text-cream rounded-[3px] border-[1.5px] bg-transparent font-semibold",
     // Low-emphasis bordered chip that picks up the accent on hover.
     ghost: "border-ink/25 text-ink hover:border-accent hover:text-accent rounded-[3px] border bg-transparent font-semibold",
     // Destructive solid.
@@ -46,8 +48,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
             type={type}
             className={cn(
                 "inline-flex cursor-pointer items-center justify-center gap-2 transition-colors",
+                "disabled:pointer-events-none disabled:opacity-55",
                 VARIANT_CLASS[variant],
-                variant !== "link" && SIZE_CLASS[size],
+                // A hair of travel on press gives solid buttons a tactile feel.
+                variant !== "link" && [SIZE_CLASS[size], "active:translate-y-px"],
                 className,
             )}
             {...rest}
