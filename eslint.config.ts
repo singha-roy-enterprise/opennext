@@ -5,7 +5,20 @@ const eslintConfig = [
     ...nextCoreWebVitals,
     ...nextTypescript,
     {
-        ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"],
+        // Generated / build output — none of it is hand-authored source, so keep
+        // it out of linting (matches the gitignored set).
+        ignores: [
+            "node_modules/**",
+            ".next/**",
+            ".open-next/**",
+            ".wrangler/**",
+            "ds-bundle/**",
+            ".ds-sync/**",
+            "out/**",
+            "build/**",
+            "next-env.d.ts",
+            "cloudflare-env.d.ts",
+        ],
     },
 ];
 
