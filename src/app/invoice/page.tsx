@@ -104,7 +104,7 @@ function RestrictedView({ openAuth }: { openAuth: () => void }) {
             <main className="mx-auto max-w-[1080px] px-7 pt-[34px] pb-[90px]">
                 <Card
                     variant="solid"
-                    className="mx-auto my-6 max-w-[560px] px-10 py-14 text-center shadow-[0_26px_60px_-38px_rgba(27,25,22,0.5)]"
+                    className="mx-auto my-6 max-w-[560px] px-10 py-14 text-center shadow-[0_26px_60px_-38px_rgb(var(--shadow-rgb)/0.5)]"
                 >
                     <div className="border-ink mx-auto mb-[22px] flex size-[52px] items-center justify-center rounded-[4px] border-[1.5px]">
                         <LockIcon size={24} />
@@ -250,7 +250,7 @@ function InvoiceGenerator() {
             <main className="mx-auto max-w-[1080px] px-7 pt-[34px] pb-[90px]">
                 <Card
                     variant="subtle"
-                    className="overflow-hidden shadow-[0_1px_0_rgba(27,25,22,0.04),0_26px_60px_-38px_rgba(27,25,22,0.5)]"
+                    className="overflow-hidden shadow-[0_1px_0_rgb(var(--shadow-rgb)/0.04),0_26px_60px_-38px_rgb(var(--shadow-rgb)/0.5)]"
                 >
                     {/* FROM + invoice meta */}
                     <div className="border-ink flex flex-wrap justify-between gap-[30px] border-b-[1.5px] px-[38px] pt-[34px] pb-7">

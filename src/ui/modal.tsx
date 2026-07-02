@@ -30,7 +30,7 @@ export function Modal({ onClose, width = "440px", zIndex = 60, className, childr
                 onClick={(e) => e.stopPropagation()}
                 style={{ width }}
                 className={cn(
-                    "border-ink bg-card max-w-full animate-[popIn_0.2s_ease] overflow-hidden rounded-[5px] border-[1.5px] shadow-[0_30px_70px_-34px_rgba(27,25,22,0.6)]",
+                    "border-ink bg-card max-w-full animate-[popIn_0.2s_ease] overflow-hidden rounded-[5px] border-[1.5px] shadow-[0_30px_70px_-34px_rgb(var(--shadow-rgb)/0.6)]",
                     className,
                 )}
             >

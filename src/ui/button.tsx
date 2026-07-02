@@ -8,13 +8,13 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
     // Solid ink → cobalt on hover. The default call-to-action.
     primary: "border-ink bg-ink text-cream hover:border-accent hover:bg-accent rounded-[3px] border-[1.5px] font-semibold",
     // Solid cobalt. The highest-emphasis action (Download invoice, Add item).
-    accent: "border-accent bg-accent text-white hover:border-accent-dark hover:bg-accent-dark rounded-[3px] border-[1.5px] font-bold",
+    accent: "border-accent bg-accent text-on-accent hover:border-accent-dark hover:bg-accent-dark rounded-[3px] border-[1.5px] font-bold",
     // Outline that inverts to an ink fill on hover.
     outline: "border-ink text-ink hover:bg-ink hover:text-cream rounded-[3px] border-[1.5px] bg-transparent font-semibold",
     // Low-emphasis bordered chip that picks up the accent on hover.
     ghost: "border-ink/25 text-ink hover:border-accent hover:text-accent rounded-[3px] border bg-transparent font-semibold",
     // Destructive solid.
-    danger: "border-danger bg-danger text-white rounded-[3px] border-[1.5px] font-bold",
+    danger: "border-danger bg-danger text-on-danger rounded-[3px] border-[1.5px] font-bold",
     // Inline text button — no box, no padding.
     link: "text-accent border-none bg-transparent p-0 font-semibold hover:underline",
 };

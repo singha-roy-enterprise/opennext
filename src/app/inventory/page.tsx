@@ -344,7 +344,7 @@ export default function InventoryPage() {
                             </button>
                         )}
                         {suggestions.length > 0 && (
-                            <div className="border-ink/20 bg-surface absolute top-[calc(100%+5px)] right-0 left-0 z-30 rounded-[3px] border p-[5px] shadow-[0_18px_40px_-20px_rgba(27,25,22,0.5)]">
+                            <div className="border-ink/20 bg-surface absolute top-[calc(100%+5px)] right-0 left-0 z-30 rounded-[3px] border p-[5px] shadow-[0_18px_40px_-20px_rgb(var(--shadow-rgb)/0.5)]">
                                 {suggestions.map((sug) => (
                                     <button
                                         key={sug.id}
@@ -541,7 +541,7 @@ export default function InventoryPage() {
 
             {/* Bulk action bar */}
             {isAdmin && selectedCount > 0 && (
-                <div className="border-ink bg-card fixed bottom-[26px] left-1/2 z-[45] flex -translate-x-1/2 animate-[toastIn_0.25s_ease] items-center gap-3.5 rounded-[4px] border-[1.5px] py-[11px] pr-3.5 pl-[18px] shadow-[0_18px_44px_-20px_rgba(27,25,22,0.6)]">
+                <div className="border-ink bg-card fixed bottom-[26px] left-1/2 z-[45] flex -translate-x-1/2 animate-[toastIn_0.25s_ease] items-center gap-3.5 rounded-[4px] border-[1.5px] py-[11px] pr-3.5 pl-[18px] shadow-[0_18px_44px_-20px_rgb(var(--shadow-rgb)/0.6)]">
                     <span className="text-[13px] font-semibold">
                         <b className="text-accent">{selectedCount}</b> selected
                     </span>
@@ -580,7 +580,7 @@ export default function InventoryPage() {
                 <Modal
                     onClose={() => setConfirm(null)}
                     width="380px"
-                    className="rounded-[4px] p-6 shadow-[0_24px_60px_-30px_rgba(27,25,22,0.6)]"
+                    className="rounded-[4px] p-6 shadow-[0_24px_60px_-30px_rgb(var(--shadow-rgb)/0.6)]"
                 >
                     <div className="border-danger/35 bg-danger/[0.08] text-danger mb-4 flex size-11 items-center justify-center rounded-[3px] border">
                         <TrashIcon size={22} />
@@ -612,7 +612,8 @@ function LoadingSkeleton() {
         height: 13,
         width: w,
         flex,
-        background: "linear-gradient(90deg,rgba(27,25,22,.05) 25%,rgba(27,25,22,.12) 37%,rgba(27,25,22,.05) 63%)",
+        background:
+            "linear-gradient(90deg, color-mix(in srgb, var(--color-ink) 5%, transparent) 25%, color-mix(in srgb, var(--color-ink) 12%, transparent) 37%, color-mix(in srgb, var(--color-ink) 5%, transparent) 63%)",
         backgroundSize: "800px 100%",
         animation: "shimmer 1.4s infinite",
     });

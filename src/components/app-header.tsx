@@ -65,7 +65,7 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
                                     return (
                                         <span
                                             key={item.to}
-                                            className="text-ink flex items-center px-4 text-[13px] font-semibold shadow-[inset_0_-3px_0_#2742C4]"
+                                            className="text-ink flex items-center px-4 text-[13px] font-semibold shadow-[inset_0_-3px_0_var(--color-accent)]"
                                         >
                                             {item.label}
                                         </span>
