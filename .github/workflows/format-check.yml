@@ -1,0 +1,24 @@
+name: Check formatting
+
+on:
+    workflow_call:
+
+jobs:
+    format_check:
+        runs-on: [ubuntu-latest]
+        name: Check formatting
+        steps:
+            - uses: actions/checkout@v7
+              name: Checkout repository
+
+            - uses: actions/setup-node@v6
+              name: Setup node
+
+            - uses: pnpm/action-setup@v6
+              name: Setup pnpm
+
+            - run: pnpm install
+              name: Install dependencies
+
+            - run: pnpm run format:check
+              name: Check formatting

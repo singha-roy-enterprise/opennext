@@ -1,0 +1,25 @@
+on:
+    push:
+        branches: [main]
+
+    pull_request:
+        branches: [main]
+
+jobs:
+    format_check:
+        uses: ./.github/workflows/format-check.yml
+
+    type_check:
+        uses: ./.github/workflows/type-check.yml
+        needs: format_check
+
+    lint:
+        uses: ./.github/workflows/lint.yml
+        needs: type_check
+
+    deploy_to_cloudflare_staging:
+        uses: ./.github/workflows/deploy-to-cloudflare-staging.yml
+        needs: lint
+        secrets: inherit
+        permissions:
+            contents: write
