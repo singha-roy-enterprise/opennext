@@ -22,29 +22,50 @@
     --color-success: #2f7a55;
     --color-warn: #b07415;
 
+    /* Readable foreground for solid accent/danger fills. Kept as its own token
+       so each theme can flip it independently of the fill colour. */
+    --color-on-accent: #f4f2ff;
+    --color-on-danger: #fef1ee;
+
     /* Fonts (wired up via next/font in layout.tsx) */
     --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
     --font-serif: var(--font-newsreader), serif;
     --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
+/* Shadow tint — warm ink on paper, near-black in the dark theme. Consumed by
+   the arbitrary `shadow-[…_rgb(var(--shadow-rgb)/α)]` utilities so drop
+   shadows re-tint automatically per theme. */
+:root {
+    --shadow-rgb: 27 25 22;
+}
+
 /* Dark theme — the semantic ink/cream pair inverts, so surfaces and text flip
-   automatically wherever these tokens are used. Applied via the `.dark` class
-   on <html> (see ThemeProvider + themeInitScript). */
+   automatically wherever these tokens are used. The surfaces form a deliberate
+   elevation ramp (paper → cream → card → surface, each a step lighter) so
+   panels, cards and inputs separate without relying on shadows. Applied via the
+   `.dark` class on <html> (see ThemeProvider + themeInitScript). */
 .dark {
-    --color-paper: #17151b;
-    --color-cream: #201d24;
-    --color-card: #201e25;
-    --color-surface: #2a2732;
-    --color-ink: #ece8f1;
-    --color-ink-700: #c4bfcd;
-    --color-ink-500: #928c9e;
-    --color-ink-300: #635d6e;
-    --color-accent: #7188f6;
-    --color-accent-dark: #8a9df8;
-    --color-danger: #e56a54;
-    --color-success: #4faa7d;
-    --color-warn: #d29a44;
+    --color-paper: #16151b;
+    --color-cream: #1f1d25;
+    --color-card: #26242e;
+    --color-surface: #302e3a;
+    --color-ink: #eceaf2;
+    --color-ink-700: #c3bfce;
+    --color-ink-500: #928d9d;
+    --color-ink-300: #5f5a6b;
+    --color-accent: #8397ff;
+    --color-accent-dark: #9aabff;
+    --color-danger: #ef7059;
+    --color-success: #4fb083;
+    --color-warn: #d7a24a;
+
+    /* Accent/danger run lighter in the dark theme, so their fills read best with
+       a near-black foreground rather than white. */
+    --color-on-accent: #16151b;
+    --color-on-danger: #1b1210;
+
+    --shadow-rgb: 0 0 0;
 }
 
 :root {
@@ -104,10 +125,10 @@ select option {
 
 /* Form inputs used across Invoice + Inventory drawer */
 .led-in {
-    @apply border-ink/[0.18] text-ink w-full rounded-[3px] border bg-white px-[13px] py-[11px] text-[13.5px] transition-colors outline-none;
+    @apply border-ink/[0.18] text-ink bg-surface w-full rounded-[3px] border px-[13px] py-[11px] text-[13.5px] transition-colors outline-none;
 }
 .led-in:focus {
-    @apply border-accent;
+    @apply border-accent bg-accent/[0.04];
 }
 .led-in.invalid {
     @apply border-danger;

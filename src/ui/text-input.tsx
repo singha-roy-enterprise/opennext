@@ -9,7 +9,7 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 /**
- * The house text field — the `.led-in` style (white fill, hairline border,
+ * The house text field — the `.led-in` style (surface fill, hairline border,
  * cobalt focus ring, red-on-invalid) as a component. Use `mono` for codes and
  * figures, `invalid` for error states.
  *
