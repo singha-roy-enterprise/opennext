@@ -316,7 +316,7 @@ export default function InventoryPage() {
                             onFocus={() => setSearchFocused(true)}
                             onBlur={() => setTimeout(() => setSearchFocused(false), 130)}
                             placeholder="Search by name or SKU…"
-                            className="border-ink/[0.18] text-ink w-full rounded-[3px] border bg-surface py-[11px] pr-[38px] pl-10 text-[13.5px] outline-none"
+                            className="border-ink/[0.18] text-ink bg-surface w-full rounded-[3px] border py-[11px] pr-[38px] pl-10 text-[13.5px] outline-none"
                         />
                         {search.trim().length > 0 && (
                             <button
@@ -331,7 +331,7 @@ export default function InventoryPage() {
                             </button>
                         )}
                         {suggestions.length > 0 && (
-                            <div className="border-ink/20 absolute top-[calc(100%+5px)] right-0 left-0 z-30 rounded-[3px] border bg-surface p-[5px] shadow-[0_18px_40px_-20px_rgba(27,25,22,0.5)]">
+                            <div className="border-ink/20 bg-surface absolute top-[calc(100%+5px)] right-0 left-0 z-30 rounded-[3px] border p-[5px] shadow-[0_18px_40px_-20px_rgba(27,25,22,0.5)]">
                                 {suggestions.map((sug) => (
                                     <button
                                         key={sug.id}
@@ -357,7 +357,7 @@ export default function InventoryPage() {
                         )}
                     </div>
 
-                    <div className="border-ink/[0.18] inline-flex items-center overflow-hidden rounded-[3px] border bg-surface">
+                    <div className="border-ink/[0.18] bg-surface inline-flex items-center overflow-hidden rounded-[3px] border">
                         <button onClick={() => setStatusFilter("all")} className={segClass(statusFilter === "all")}>
                             All
                         </button>
@@ -380,7 +380,7 @@ export default function InventoryPage() {
                             <select
                                 value={sortKey}
                                 onChange={(e) => setSortKey(e.target.value as SortKey)}
-                                className="border-ink/[0.18] text-ink cursor-pointer appearance-none rounded-[3px] border bg-surface py-2.5 pr-[30px] pl-3 text-[13px] font-medium outline-none"
+                                className="border-ink/[0.18] text-ink bg-surface cursor-pointer appearance-none rounded-[3px] border py-2.5 pr-[30px] pl-3 text-[13px] font-medium outline-none"
                             >
                                 <option value="name">Sort: Name</option>
                                 <option value="sku">Sort: SKU</option>
@@ -395,7 +395,7 @@ export default function InventoryPage() {
                         <button
                             onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
                             title="Toggle direction"
-                            className="border-ink/[0.18] text-accent flex size-[38px] cursor-pointer items-center justify-center rounded-[3px] border bg-surface"
+                            className="border-ink/[0.18] text-accent bg-surface flex size-[38px] cursor-pointer items-center justify-center rounded-[3px] border"
                         >
                             <ArrowDownIcon
                                 size={16}
@@ -404,7 +404,7 @@ export default function InventoryPage() {
                         </button>
                     </div>
 
-                    <div className="border-ink/[0.18] inline-flex items-center overflow-hidden rounded-[3px] border bg-surface">
+                    <div className="border-ink/[0.18] bg-surface inline-flex items-center overflow-hidden rounded-[3px] border">
                         <button
                             onClick={() => setView("table")}
                             title="Table view"
@@ -424,7 +424,7 @@ export default function InventoryPage() {
                     <button
                         type="button"
                         onClick={exportCsv}
-                        className="border-ink/[0.22] text-ink hover:border-ink inline-flex cursor-pointer items-center gap-2 rounded-[3px] border bg-surface px-3.5 py-2.5 text-[13px] font-semibold transition-colors"
+                        className="border-ink/[0.22] text-ink hover:border-ink bg-surface inline-flex cursor-pointer items-center gap-2 rounded-[3px] border px-3.5 py-2.5 text-[13px] font-semibold transition-colors"
                     >
                         <DownloadIcon size={15} />
                         Export
@@ -741,7 +741,7 @@ function TableRow({
             <div className="flex items-center gap-[9px]">
                 {isAdmin ? (
                     <>
-                        <div className="border-ink/[0.18] inline-flex items-center rounded-[3px] border bg-surface">
+                        <div className="border-ink/[0.18] bg-surface inline-flex items-center rounded-[3px] border">
                             <button
                                 type="button"
                                 onClick={onDec}
@@ -802,7 +802,7 @@ function CardItem({ item, isAdmin, selected, onToggle, onInc, onDec, onEdit, onD
     const m = statusMeta(item);
     const margin = marginParts(item);
     return (
-        <div className={cn("rounded-[3px] border bg-surface p-4", selected ? "border-accent" : "border-ink/[0.14]")}>
+        <div className={cn("bg-surface rounded-[3px] border p-4", selected ? "border-accent" : "border-ink/[0.14]")}>
             <div className="mb-[11px] flex items-center justify-between gap-2.5">
                 <div className="flex min-w-0 items-center gap-[9px]">
                     {isAdmin && (
@@ -843,7 +843,7 @@ function CardItem({ item, isAdmin, selected, onToggle, onInc, onDec, onEdit, onD
                 <div className="flex items-center gap-2">
                     {isAdmin ? (
                         <>
-                            <div className="border-ink/[0.18] inline-flex items-center rounded-[3px] border bg-surface">
+                            <div className="border-ink/[0.18] bg-surface inline-flex items-center rounded-[3px] border">
                                 <button
                                     type="button"
                                     onClick={onDec}
@@ -910,7 +910,10 @@ function ItemDrawer({
 }) {
     const d = drawer.draft;
     return (
-        <div onClick={onClose} className="fixed inset-0 z-50 flex animate-[overlayIn_0.2s_ease] justify-end bg-black/45">
+        <div
+            onClick={onClose}
+            className="fixed inset-0 z-50 flex animate-[overlayIn_0.2s_ease] justify-end bg-black/45"
+        >
             <div
                 onClick={(e) => e.stopPropagation()}
                 className="border-ink bg-card h-full w-[440px] max-w-[92vw] animate-[drawerIn_0.26s_cubic-bezier(0.2,0.8,0.2,1)] overflow-y-auto border-l-[1.5px]"

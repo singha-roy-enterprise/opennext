@@ -491,7 +491,7 @@ function InvoiceGenerator() {
                             />
                         </button>
                         {showReverse && (
-                            <div className="border-ink/[0.16] mt-3.5 rounded-[3px] border bg-surface p-[18px]">
+                            <div className="border-ink/[0.16] bg-surface mt-3.5 rounded-[3px] border p-[18px]">
                                 <div className="grid grid-cols-[2fr_1fr_1fr] items-end gap-3.5">
                                     <div>
                                         <label className="text-ink-500 mb-1.5 block text-[10px] font-semibold tracking-[0.12em] uppercase">

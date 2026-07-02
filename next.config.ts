@@ -4,7 +4,11 @@ import { execSync } from "node:child_process";
 /** Run a git command at build time, swallowing any error (e.g. git absent). */
 function tryGit(cmd: string): string | undefined {
     try {
-        return execSync(cmd, { stdio: ["ignore", "pipe", "ignore"] }).toString().trim() || undefined;
+        return (
+            execSync(cmd, { stdio: ["ignore", "pipe", "ignore"] })
+                .toString()
+                .trim() || undefined
+        );
     } catch {
         return undefined;
     }

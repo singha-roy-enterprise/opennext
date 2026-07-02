@@ -107,7 +107,7 @@ export function AppHeader({ showNav = true }: { showNav?: boolean }) {
                     {isSignedIn && session.user && (
                         <div className="flex items-center gap-[11px]">
                             <span className={roleBadgeClass(isAdmin)}>{isAdmin ? "ADMIN" : "USER"}</span>
-                            <div className="border-ink/[0.18] flex items-center gap-2.5 rounded-[3px] border bg-surface py-[5px] pr-1.5 pl-[5px]">
+                            <div className="border-ink/[0.18] bg-surface flex items-center gap-2.5 rounded-[3px] border py-[5px] pr-1.5 pl-[5px]">
                                 <div className="bg-ink text-cream flex size-7 items-center justify-center font-serif text-[13px]">
                                     {session.user.initials}
                                 </div>

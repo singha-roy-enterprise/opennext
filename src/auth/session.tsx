@@ -160,9 +160,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             if (!id || !password) {
                 return { ok: false, error: "Enter your username/email and password." };
             }
-            const match = allCredentials().find(
-                (c) => c.username.toLowerCase() === id || c.email.toLowerCase() === id,
-            );
+            const match = allCredentials().find((c) => c.username.toLowerCase() === id || c.email.toLowerCase() === id);
             if (!match || match.password !== password) {
                 return { ok: false, error: "Incorrect username/email or password." };
             }

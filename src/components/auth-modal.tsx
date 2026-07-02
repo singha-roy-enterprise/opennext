@@ -197,7 +197,7 @@ export function AuthModal() {
                                     key={c.username}
                                     type="button"
                                     onClick={() => signInAsDemo(c.username, c.password)}
-                                    className="border-ink/[0.16] hover:border-accent flex w-full cursor-pointer items-center gap-[13px] rounded-[3px] border bg-surface p-[11px] text-left transition-colors"
+                                    className="border-ink/[0.16] hover:border-accent bg-surface flex w-full cursor-pointer items-center gap-[13px] rounded-[3px] border p-[11px] text-left transition-colors"
                                 >
                                     <span
                                         className={cn(
@@ -281,7 +281,7 @@ function Field({
     return (
         <label className="mb-3.5 block">
             <span className="text-ink-700 mb-1.5 block text-[11.5px] font-semibold tracking-[0.02em]">{label}</span>
-            <span className="border-ink/[0.18] focus-within:border-accent flex items-center gap-2.5 rounded-[3px] border bg-surface px-3 py-[10px] transition-colors">
+            <span className="border-ink/[0.18] focus-within:border-accent bg-surface flex items-center gap-2.5 rounded-[3px] border px-3 py-[10px] transition-colors">
                 <span className="text-ink-500 flex-none">{icon}</span>
                 <input
                     type={type}
