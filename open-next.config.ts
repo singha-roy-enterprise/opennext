@@ -10,6 +10,6 @@ const config = defineCloudflareConfig({
 
 // Minify the server bundle so the Worker stays under Cloudflare's size limit
 // (3 MiB gzipped on the free plan).
-config.default.minify = true;
+// config.default.minify = true;
 
 export default config;
