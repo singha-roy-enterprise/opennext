@@ -18,6 +18,7 @@
         "db:generate": "drizzle-kit generate",
         "db:studio": "drizzle-kit studio",
         "db:migrate:local": "wrangler d1 migrations apply singha-roy-enterprise-d1 --local",
+        "db:migrate:preview": "wrangler d1 migrations apply singha-roy-enterprise-staging-d1 --local --env staging",
         "db:migrate:staging": "wrangler d1 migrations apply singha-roy-enterprise-staging-d1 --remote --env staging",
         "prepare": "git config core.hooksPath .githooks"
     },
