@@ -13,7 +13,7 @@
         "format:check": "prettier --check '**/*.{ts,tsx,scss,json,jsonc,yml,yaml}'",
         "deploy:staging": "pnpm run cloudflare-typegen && opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env staging",
         "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-        "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+        "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview -- --env staging",
         "cloudflare-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
         "db:generate": "prisma generate",
         "db:migrate:local": "wrangler d1 migrations apply singha-roy-enterprise-d1 --local",
