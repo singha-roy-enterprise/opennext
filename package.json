@@ -21,6 +21,11 @@
         "postinstall": "prisma generate",
         "prepare": "git config core.hooksPath .githooks"
     },
+    "postcss": {
+        "plugins": {
+            "@tailwindcss/postcss": {}
+        }
+    },
     "dependencies": {
         "@opennextjs/cloudflare": "^1.20.1",
         "@prisma/adapter-d1": "^7.8.0",
