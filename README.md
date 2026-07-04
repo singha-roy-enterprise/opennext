@@ -6,37 +6,38 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 Read the documentation at https://opennext.js.org/cloudflare.
 
-## Backend (tRPC + Prisma + Cloudflare D1)
+## Backend (tRPC + Drizzle + Cloudflare D1)
 
 Auth (signup / login / logout / session) and the inventory ledger are served by
 type-safe [tRPC](https://trpc.io) routes under `src/app/api/trpc`, backed by
-[Prisma](https://www.prisma.io) against a [Cloudflare D1](https://developers.cloudflare.com/d1/)
+[Drizzle ORM](https://orm.drizzle.team) against a [Cloudflare D1](https://developers.cloudflare.com/d1/)
 (serverless SQLite) database. Passwords are hashed with Web Crypto (PBKDF2) and
 sessions are opaque tokens held in an httpOnly cookie.
 
 Key locations:
 
-- `prisma/schema.prisma` — data model (`User`, `Session`, `InventoryItem`).
+- `src/server/db/schema.ts` — Drizzle data model (`users`, `sessions`, `inventory_items`).
 - `migrations/` — raw SQL migrations applied to D1 by Wrangler (`0001_init`, `0002_seed`).
-- `src/server/` — Prisma client, auth helpers, tRPC context/routers.
+- `src/server/` — Drizzle client, auth helpers, tRPC context/routers.
 - `src/trpc/` — the client-side tRPC + React Query provider.
 
 ### First-time setup
 
 ```bash
-pnpm install                 # also runs `prisma generate` (postinstall)
+pnpm install                 # Drizzle has no generated client, so nothing to regenerate
 pnpm run db:migrate:local    # create + seed the local D1 database
 ```
 
 The seed adds two demo accounts — `debarishi-sr` / `admin123` (admin) and
-`sera-sengupta` / `user123` (user) — plus a starter catalogue. Regenerate the
-Prisma client after editing the schema with `pnpm run db:generate`, and produce
-a new SQL migration with:
+`sera-sengupta` / `user123` (user) — plus a starter catalogue. After editing
+`src/server/db/schema.ts`, produce a new SQL migration with:
 
 ```bash
-pnpm exec prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > migrations/000N_name.sql
+pnpm run db:generate         # drizzle-kit generate — emits migrations/<NNNN>_*.sql
 ```
 
+Migrations are hand-authored SQL applied to D1 by Wrangler (the schema is a
+typed mirror of those tables). Browse the data locally with `pnpm run db:studio`.
 To apply migrations to the deployed (staging) database: `pnpm run db:migrate:staging`.
 
 ## Develop

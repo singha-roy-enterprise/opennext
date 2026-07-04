@@ -1,7 +1,9 @@
+import { eq, or } from "drizzle-orm";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "@/server/trpc";
 import type { Context, SessionUser } from "@/server/context";
+import { sessions, users, type User } from "@/server/db";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
 import {
     buildClearSessionCookie,
@@ -9,7 +11,6 @@ import {
     generateSessionToken,
     sessionExpiry,
 } from "@/server/auth/session-cookie";
-import type { User } from "@/generated/prisma/client";
 
 /** Map a DB user row to the public session shape (drops the password hash). */
 function toSessionUser(user: User): SessionUser {
@@ -36,7 +37,7 @@ function deriveInitials(name: string): string {
 async function startSession(ctx: Context, userId: string): Promise<void> {
     const token = generateSessionToken();
     const expiresAt = sessionExpiry();
-    await ctx.db.session.create({ data: { token, userId, expiresAt } });
+    await ctx.db.insert(sessions).values({ token, userId, expiresAt });
     ctx.resHeaders.append("Set-Cookie", buildSessionCookie(token, expiresAt, ctx.secure));
 }
 
@@ -61,10 +62,11 @@ export const authRouter = router({
             const username = input.username.toLowerCase();
             const email = input.email.toLowerCase();
 
-            const clash = await ctx.db.user.findFirst({
-                where: { OR: [{ username }, { email }] },
-                select: { id: true },
-            });
+            const clash = await ctx.db
+                .select({ id: users.id })
+                .from(users)
+                .where(or(eq(users.username, username), eq(users.email, email)))
+                .get();
             if (clash) {
                 throw new TRPCError({
                     code: "CONFLICT",
@@ -72,16 +74,17 @@ export const authRouter = router({
                 });
             }
 
-            const user = await ctx.db.user.create({
-                data: {
+            const [user] = await ctx.db
+                .insert(users)
+                .values({
                     username,
                     email,
                     name: input.name.trim(),
                     initials: deriveInitials(input.name),
                     role: "user",
                     password: await hashPassword(input.password),
-                },
-            });
+                })
+                .returning();
 
             await startSession(ctx, user.id);
             return toSessionUser(user);
@@ -96,9 +99,11 @@ export const authRouter = router({
         )
         .mutation(async ({ ctx, input }): Promise<SessionUser> => {
             const identifier = input.identifier.toLowerCase();
-            const user = await ctx.db.user.findFirst({
-                where: { OR: [{ username: identifier }, { email: identifier }] },
-            });
+            const user = await ctx.db
+                .select()
+                .from(users)
+                .where(or(eq(users.username, identifier), eq(users.email, identifier)))
+                .get();
 
             // Verify even when the user is missing to keep the timing uniform.
             const ok = user
@@ -115,7 +120,10 @@ export const authRouter = router({
 
     logout: protectedProcedure.mutation(async ({ ctx }) => {
         if (ctx.sessionToken) {
-            await ctx.db.session.delete({ where: { token: ctx.sessionToken } }).catch(() => {});
+            await ctx.db
+                .delete(sessions)
+                .where(eq(sessions.token, ctx.sessionToken))
+                .catch(() => {});
         }
         ctx.resHeaders.append("Set-Cookie", buildClearSessionCookie(ctx.secure));
         return { ok: true as const };

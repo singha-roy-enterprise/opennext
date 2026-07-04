@@ -1,5 +1,7 @@
+import { eq } from "drizzle-orm";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { createPrisma } from "@/server/db";
+import { createDb } from "@/server/db";
+import { sessions } from "@/server/db/schema";
 import { SESSION_COOKIE, readCookie } from "@/server/auth/session-cookie";
 
 /** The public shape of a signed-in user — never includes the password hash. */
@@ -14,7 +16,7 @@ export interface SessionUser {
 }
 
 /**
- * Per-request tRPC context. Resolves the D1-backed Prisma client from the
+ * Per-request tRPC context. Resolves the D1-backed Drizzle client from the
  * Cloudflare binding and, if a valid session cookie is present, the current
  * user. `resHeaders` is threaded through so auth mutations can set/clear the
  * session cookie on the response.
@@ -23,7 +25,7 @@ export async function createTRPCContext({ req, resHeaders }: { req: Request; res
     const { env } = await getCloudflareContext({ async: true });
     if (!env.D1) throw new Error("D1 binding is not configured — check wrangler.jsonc.");
 
-    const db = createPrisma(env.D1);
+    const db = createDb(env.D1);
     const secure = new URL(req.url).protocol === "https:";
 
     const token = readCookie(req.headers.get("cookie"), SESSION_COOKIE);
@@ -31,7 +33,10 @@ export async function createTRPCContext({ req, resHeaders }: { req: Request; res
     let sessionToken: string | null = null;
 
     if (token) {
-        const session = await db.session.findUnique({ where: { token }, include: { user: true } });
+        const session = await db.query.sessions.findFirst({
+            where: eq(sessions.token, token),
+            with: { user: true },
+        });
         if (session && session.expiresAt > new Date()) {
             sessionToken = token;
             const u = session.user;
@@ -46,7 +51,10 @@ export async function createTRPCContext({ req, resHeaders }: { req: Request; res
             };
         } else if (session) {
             // Expired — clean it up so the table doesn't accumulate dead rows.
-            await db.session.delete({ where: { token } }).catch(() => {});
+            await db
+                .delete(sessions)
+                .where(eq(sessions.token, token))
+                .catch(() => {});
         }
     }
 
