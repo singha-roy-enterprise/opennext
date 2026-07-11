@@ -232,8 +232,8 @@ function InvoiceGenerator() {
             return;
         }
         setFieldErrors({});
-        // Loaded lazily so pdfmake (and its embedded fonts) is bundled only into
-        // a browser chunk, never the Cloudflare Worker server bundle.
+        // Loaded lazily so the pdf-lib drawing code is bundled only into a
+        // browser chunk, never the Cloudflare Worker server bundle.
         const { generatePDF } = await import("@/lib/pdf-download");
         await generatePDF(billData, type);
         toast(
