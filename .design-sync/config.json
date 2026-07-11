@@ -17,7 +17,8 @@
         "StatCell": "src/ui/stat-cell.tsx",
         "Card": "src/ui/card.tsx",
         "Modal": "src/ui/modal.tsx",
-        "Drawer": "src/ui/drawer.tsx"
+        "Drawer": "src/ui/drawer.tsx",
+        "InvoiceDocument": "src/ui/invoice-document.tsx"
     },
     "dtsPropsFor": {
         "Button": "variant?: \"primary\" | \"accent\" | \"outline\" | \"ghost\" | \"danger\" | \"link\"; size?: \"sm\" | \"md\"; type?: \"button\" | \"submit\" | \"reset\"; disabled?: boolean; onClick?: React.MouseEventHandler<HTMLButtonElement>; className?: string; children?: React.ReactNode",
@@ -29,10 +30,12 @@
         "StatCell": "label: string; value: string; tone?: \"default\" | \"accent\" | \"warn\" | \"danger\" | \"success\"; icon?: React.ReactNode; last?: boolean; className?: string",
         "Card": "variant?: \"solid\" | \"subtle\" | \"dashed\"; className?: string; children?: React.ReactNode",
         "Modal": "onClose: () => void; width?: string; zIndex?: number; className?: string; children: React.ReactNode",
-        "Drawer": "onClose: () => void; title: string; footer?: React.ReactNode; width?: string; bodyClassName?: string; children: React.ReactNode"
+        "Drawer": "onClose: () => void; title: string; footer?: React.ReactNode; width?: string; bodyClassName?: string; children: React.ReactNode",
+        "InvoiceDocument": "documentType?: \"invoice\" | \"credit-note\"; invoiceNumber?: string; date?: string; business?: InvoiceBusiness; billTo?: InvoiceParty; items?: InvoiceLineItem[]; amountInWords?: string; bank?: { label: string; value: string }[]; className?: string"
     },
     "overrides": {
         "Modal": { "cardMode": "single", "viewport": "460x400" },
-        "Drawer": { "cardMode": "single", "viewport": "520x560" }
+        "Drawer": { "cardMode": "single", "viewport": "520x560" },
+        "InvoiceDocument": { "cardMode": "single", "viewport": "780x1200" }
     }
 }

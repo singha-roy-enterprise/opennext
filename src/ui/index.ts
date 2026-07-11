@@ -14,3 +14,11 @@ export { StatCell, type StatCellProps, type StatTone } from "@/ui/stat-cell";
 export { Card, type CardProps, type CardVariant } from "@/ui/card";
 export { Modal, type ModalProps } from "@/ui/modal";
 export { Drawer, type DrawerProps } from "@/ui/drawer";
+export {
+    InvoiceDocument,
+    type InvoiceDocumentProps,
+    type InvoiceDocumentType,
+    type InvoiceParty,
+    type InvoiceLineItem,
+    type InvoiceBusiness,
+} from "@/ui/invoice-document";
