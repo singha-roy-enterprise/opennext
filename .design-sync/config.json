@@ -18,7 +18,6 @@
         "Card": "src/ui/card.tsx",
         "Modal": "src/ui/modal.tsx",
         "Drawer": "src/ui/drawer.tsx",
-        "Logo": "src/ui/logo.tsx",
         "InvoiceDocument": "src/ui/invoice-document.tsx"
     },
     "dtsPropsFor": {
@@ -32,7 +31,6 @@
         "Card": "variant?: \"solid\" | \"subtle\" | \"dashed\"; className?: string; children?: React.ReactNode",
         "Modal": "onClose: () => void; width?: string; zIndex?: number; className?: string; children: React.ReactNode",
         "Drawer": "onClose: () => void; title: string; footer?: React.ReactNode; width?: string; bodyClassName?: string; children: React.ReactNode",
-        "Logo": "size?: number; variant?: \"tile\" | \"bare\"; tileColor?: string; markColor?: string; title?: string; className?: string",
         "InvoiceDocument": "documentType?: \"invoice\" | \"credit-note\"; invoiceNumber?: string; date?: string; business?: InvoiceBusiness; billTo?: InvoiceParty; items?: InvoiceLineItem[]; amountInWords?: string; bank?: { label: string; value: string }[]; className?: string"
     },
     "overrides": {

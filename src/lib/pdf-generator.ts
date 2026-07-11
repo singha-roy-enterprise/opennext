@@ -1,14 +1,7 @@
-import { PDFDocument, StandardFonts, rgb, LineCapStyle, type PDFFont, type PDFPage, type RGB } from "pdf-lib";
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage, type RGB } from "pdf-lib";
 import type { BillData, BillItemCalculated } from "@/types/bill";
 import { formatAmountInWords } from "@/lib/number-to-words";
-import {
-    LOGO_VIEWBOX,
-    LOGO_TILE_PATH,
-    LOGO_MARK_PATHS,
-    LOGO_MARK_STROKE,
-    LOGO_TILE_COLOR,
-    LOGO_MARK_COLOR,
-} from "@/assets/singha-roy-enterprise-logo";
+import { singhaRoyEnterpriseLogoLayers, LOGO_CUTOUT, LOGO_VIEWBOX } from "@/assets/singha-roy-enterprise-logo";
 
 export type DocumentType = "invoice" | "credit-note";
 
@@ -190,21 +183,15 @@ class Sheet {
     }
 }
 
-/** Draw the brand mark with its top-left at (x, topFromEdge). Returns drawn size. */
+/** Draw the vector logo with its top-left near (x, topFromEdge). Returns drawn size. */
 function drawLogo(page: PDFPage, x: number, topFromEdge: number, targetHeight: number): { w: number; h: number } {
     const scale = targetHeight / LOGO_VIEWBOX.height;
     const y = PAGE_H - topFromEdge;
-    page.drawSvgPath(LOGO_TILE_PATH, { x, y, scale, color: hex(LOGO_TILE_COLOR) });
-    for (const d of LOGO_MARK_PATHS) {
-        page.drawSvgPath(d, {
-            x,
-            y,
-            scale,
-            borderColor: hex(LOGO_MARK_COLOR),
-            borderWidth: LOGO_MARK_STROKE * scale,
-            borderLineCap: LineCapStyle.Round,
-        });
+    for (const layer of singhaRoyEnterpriseLogoLayers) {
+        page.drawSvgPath(layer.d, { x, y, scale, color: hex(layer.fill) });
     }
+    // Repaint the mask notch in the sheet colour to reproduce the SVG cut-out.
+    page.drawSvgPath(LOGO_CUTOUT, { x, y, scale, color: WHITE });
     return { w: LOGO_VIEWBOX.width * scale, h: targetHeight };
 }
 
