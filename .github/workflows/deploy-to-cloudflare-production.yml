@@ -1,0 +1,35 @@
+name: Deploy to Cloudflare (production)
+
+on:
+    workflow_call:
+
+jobs:
+    deploy_production:
+        runs-on: [ubuntu-latest]
+        name: Deploy to Cloudflare (production)
+        environment: production
+        steps:
+            - uses: actions/checkout@v7
+              name: Checkout repository
+
+            - uses: actions/setup-node@v6
+              name: Setup node
+              with:
+                  node-version: latest
+
+            - uses: pnpm/action-setup@v6
+              name: Setup pnpm
+              with:
+                  version: latest
+
+            - run: pnpm install
+              name: Install dependencies
+
+            - run: pnpm run db:migrate:production
+              name: Apply D1 migrations (production)
+              env:
+                  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+            - run: pnpm run deploy:production
+              env:
+                  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

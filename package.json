@@ -12,6 +12,7 @@
         "format": "prettier --write '**/*.{ts,tsx,css,json,jsonc,yml,yaml}'",
         "format:check": "prettier --check '**/*.{ts,tsx,scss,json,jsonc,yml,yaml}'",
         "deploy:staging": "pnpm run cloudflare-typegen && opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env staging",
+        "deploy:production": "pnpm run cloudflare-typegen && opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env production",
         "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
         "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview -- --env staging",
         "cloudflare-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
@@ -20,6 +21,7 @@
         "db:migrate:local": "wrangler d1 migrations apply singha-roy-enterprise-d1 --local",
         "db:migrate:preview": "wrangler d1 migrations apply singha-roy-enterprise-staging-d1 --local --env staging",
         "db:migrate:staging": "wrangler d1 migrations apply singha-roy-enterprise-staging-d1 --remote --env staging",
+        "db:migrate:production": "wrangler d1 migrations apply singha-roy-enterprise-production-d1 --remote --env production",
         "prepare": "git config core.hooksPath .githooks"
     },
     "postcss": {

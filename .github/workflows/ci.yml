@@ -23,3 +23,12 @@ jobs:
         secrets: inherit
         permissions:
             contents: write
+
+    deploy_to_cloudflare_production:
+        uses: ./.github/workflows/deploy-to-cloudflare-production.yml
+        # Only ship to production on an actual push to main — never on pull_request.
+        if: github.event_name == 'push'
+        needs: deploy_to_cloudflare_staging
+        secrets: inherit
+        permissions:
+            contents: write
